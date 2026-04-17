@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <h2 class="fw-bold mb-4">Inventario de Equipos</h2>
+
+    <div class="card border-0 shadow-sm mb-4 p-3 rounded-4">
+        <form method="GET" class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <input type="text" name="q" value="{{ q }}" class="form-control rounded-pill" placeholder="Buscar por código o serie...">
+            </div>
+            <div class="col-md-3">
+                <select name="estado" class="form-select rounded-pill">
+                    <option value="">Todos los estados</option>
+                    <option value="DISPONIBLE" {% if estado_actual == 'DISPONIBLE' %}selected{% endif %}>Disponible</option>
+            <option value="EN_USO" {% if estado_actual == 'EN_USO' %}selected{% endif %}>En Uso</option>
+            <option value="MANTENIMIENTO" {% if estado_actual == 'MANTENIMIENTO' %}selected{% endif %}>En Mantenimiento</option>
+            <option value="NO_EXISTE" {% if estado_actual == 'NO_EXISTE' %}selected{% endif %}>No Existe / Dado de Baja</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary rounded-pill w-100"><i class="bi bi-search"></i></button>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="?export=excel&q={{ q }}&estado={{ estado }}" class="btn btn-success rounded-pill px-3 shadow-sm">
+                    <i class="bi bi-file-earmark-excel"></i> Excel
+                </a>
+                <a href="?export=pdf&q={{ q }}&estado={{ estado }}" class="btn btn-danger rounded-pill px-3 shadow-sm">
+                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <table class="table table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Estado</th>
+                    <th>Aula</th>
+                    <th>Docente </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in equipos %}
+                <tr>
+                    <td class="fw-bold">{{ e.marca }}</td>
+                    <td>{{ e.modelo }}</td>
+                    <td>
+                        <span class="badge rounded-pill {% if e.estado == 'Operativa' %}bg-success{% elif e.estado == 'Malograda' %}bg-danger{% else %}bg-warning{% endif %}">
+                            {{ e.estado }}
+                        </span>
+                    </td>
+                    <td>{{ e.aula }}</td>
+                    <td>{{ e.responsable | default:"No asignado" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center p-5 text-muted">No se encontraron equipos con esos filtros.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

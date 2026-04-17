@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block guest_content %}
+<div class="card shadow-lg border-0 rounded-4 p-5 text-white text-center" style="background-color: #003366; width: 400px; border: 1px solid rgba(255,255,255,0.1) !important;">
+    <img src="{% static 'inventario/logo.jpg' %}" class="mb-3 mx-auto shadow-sm rounded-circle" style="width: 100px; background: white; padding: 5px;">
+    <h2 class="fw-bold mb-1">SIS-INVENTARIO</h2>
+    <p class="text-white-50 small mb-4">I.E. JUANA CERVANTES DE BOLOGNESI</p>
+    
+    <a href="{% url 'admin:index' %}" class="btn btn-warning w-100 rounded-pill fw-bold py-3 mb-3 shadow">
+        <i class="bi bi-person-badge me-2"></i> INICIAR SESIÓN ADMIN
+    </a>
+
+    <div class="d-flex align-items-center my-3">
+        <hr class="flex-grow-1 opacity-25">
+        <span class="mx-2 small opacity-50">O TAMBIÉN</span>
+        <hr class="flex-grow-1 opacity-25">
+    </div>
+
+    <a href="{% url 'invitado' %}" class="btn btn-outline-light w-100 rounded-pill py-2">
+        Entrar como Invitado
+    </a>
+</div>
+{% endblock %}
