@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid p-4 position-relative">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; opacity: 0.08; pointer-events: none;">
+        <img src="{% static 'inventario/logo.jpg' %}" style="width: 500px;">
+    </div>
+
+    <div class="position-relative" style="z-index: 1;">
+        <h2 class="fw-bold mb-4">Inventario de Equipos</h2>
+
+        <div class="card border-0 shadow-sm mb-4 p-3 rounded-4">
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <select name="estado" class="form-select rounded-pill">
+                        <option value="">Todos los estados</option>
+                        <option value="Operativo">Operativo</option>
+                        <option value="Reparación">En Reparación</option>
+                        <option value="Malogrado">Malogrado</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary rounded-pill w-100 fw-bold">Filtrar</button>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="{% url 'exportar_excel' %}" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="bi bi-file-earmark-excel me-2"></i> Generar Reporte Excel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre / Modelo</th>
+                        <th>Estado</th>
+                        <th>Ubicación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for equipo in equipos %}
+                    <tr>
+                        <td class="fw-bold">{{ equipo.codigo }}</td>
+                        <td>{{ equipo.nombre }}</td>
+                        <td>
+                            <span class="badge rounded-pill {% if equipo.estado == 'Operativo' %}bg-success{% elif equipo.estado == 'Malogrado' %}bg-danger{% else %}bg-warning{% endif %}">
+                                {{ equipo.estado }}
+                            </span>
+                        </td>
+                        <td>{{ equipo.ubicacion }}</td>
+                        <td>{{ equipo.docente }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center p-5 text-muted">No se encontraron equipos.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid p-4" style="position: relative; min-height: 90vh;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; pointer-events: none;">
+        <img src="{% static 'inventario/logo.jpg' %}" alt="Fondo" style="width: 550px; opacity: 0.12;">
+    </div>
+
+    <div style="position: relative; z-index: 1;">
+        <div class="d-flex justify-content-between align-items-center mb-5 bg-white p-4 rounded-4 shadow-sm border">
+            <div>
+                <i class="bi bi-calendar3 me-2 text-primary"></i>
+                <span id="real-time-date" class="fw-bold text-secondary fs-5">Cargando fecha...</span>
+            </div>
+            <div class="badge bg-primary rounded-pill px-4 py-2 fs-6 shadow-sm">
+                <i class="bi bi-person-circle me-2"></i>
+                {% if request.session.es_invitado %} Invitado {% else %} {{ user.username }} {% endif %}
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-8">
+                <div class="card border-0 rounded-4 shadow-sm p-4 h-100">
+                    <h4 class="fw-bold mb-4 border-bottom pb-2">Resumen de Inventario</h4>
+                    <div class="d-flex justify-content-around text-center py-3">
+                        <div><h1 class="display-4 fw-bold text-dark">{{ total }}</h1><p class="text-muted">Total Laptops</p></div>
+                        <div><h1 class="display-4 fw-bold text-success">{{ disponible }}</h1><p class="text-success">Disponible</p></div>
+                        <div><h1 class="display-4 fw-bold text-warning">{{ en_uso }}</h1><p class="text-warning">En Uso</p></div>
+                        <div><h1 class="display-4 fw-bold text-danger">{{ mantenimiento }}</h1><p class="text-danger">En Mantenimiento</p></div>
+                        <div><h1 class="display-4 fw-bold text-secondary">{{ no_existe }}</h1><p class="text-secondary">No Existe</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 rounded-4 shadow p-4 bg-danger text-white h-100 d-flex flex-column">
+                    <h5 class="fw-bold mb-3">Acciones Críticas</h5>
+                    <p class="small opacity-75">Acceso restringido para Administradores.</p>
+                    <div class="mt-auto">
+                        <button class="btn btn-outline-light rounded-pill w-100">Ver historial</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateDate() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        let dateStr = now.toLocaleDateString('es-ES', options);
+        dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        document.getElementById('real-time-date').innerText = dateStr;
+    }
+    updateDate();
+    setInterval(updateDate, 60000);
+</script>
+{% endblock %}

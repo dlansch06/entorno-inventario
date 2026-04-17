@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIS-INVENTARIO J.C.</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { margin: 0; background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .sidebar { width: 280px; height: 100vh; background: #1a1a1a; position: fixed; z-index: 1000; }
+        .main-content { margin-left: 280px; min-height: 100vh; padding: 20px; }
+        .login-screen { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #00264d; }
+        .nav-link:hover { background: rgba(255,255,255,0.1); border-radius: 50px; }
+        .nav-link.active { background: #0d6efd !important; border-radius: 50px; }
+    </style>
+</head>
+<body>
+
+    {% if user.is_authenticated or request.session.es_invitado %}
+        <div class="sidebar text-white p-4 d-flex flex-column shadow">
+            <h3 class="fw-bold mb-1">SIS-INVENTARIO</h3>
+            <p class="text-white-50 small mb-5">I.E. Juana Cervantes</p>
+            
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item mb-2">
+                    <a href="{% url 'dashboard' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="bi bi-speedometer2 me-2"></i> PANEL
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="{% url 'reportes' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'reportes' %}active{% endif %}">
+                        <i class="bi bi-laptop me-2"></i> EQUIPOS
+                    </a>
+                </li>
+            </ul>
+
+            <div class="border-top pt-3">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link text-warning text-decoration-none fw-bold p-0">
+                        <i class="bi bi-box-arrow-left me-2"></i> CERRAR SESIÓN
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+
+    {% else %}
+        <div class="login-screen">
+            {% block guest_content %}{% endblock %}
+        </div>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
