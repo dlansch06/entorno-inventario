@@ -13,14 +13,29 @@
         .login-screen { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #00264d; }
         .nav-link:hover { background: rgba(255,255,255,0.1); border-radius: 50px; }
         .nav-link.active { background: #0d6efd !important; border-radius: 50px; }
+        
+        /* Estilo para que el logo resalte */
+        .sidebar-logo {
+            width: 100px; /* Tamaño notorio */
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5)); /* Le da profundidad y nitidez */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
 
     {% if user.is_authenticated or request.session.es_invitado %}
         <div class="sidebar text-white p-4 d-flex flex-column shadow">
-            <h3 class="fw-bold mb-1">SIS-INVENTARIO</h3>
-            <p class="text-white-50 small mb-5">I.E. Juana Cervantes</p>
+            
+            <div class="text-center">
+                <img src="{% static 'inventario/logo.jpg' %}" alt="Logo Colegio" class="sidebar-logo">
+                <h3 class="fw-bold mb-1">SIS-INVENTARIO</h3>
+                <p class="text-white-50 small mb-5">I.E. Juana Cervantes</p>
+            </div>
             
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item mb-2">
