@@ -2,23 +2,100 @@
 {% load static %}
 
 {% block guest_content %}
-<div class="card shadow-lg border-0 rounded-4 p-5 text-white text-center" style="background-color: #003366; width: 400px; border: 1px solid rgba(255,255,255,0.1) !important;">
-    <img src="{% static 'inventario/logo.jpg' %}" class="mb-3 mx-auto shadow-sm rounded-circle" style="width: 100px; background: white; padding: 5px;">
-    <h2 class="fw-bold mb-1">SIS-INVENTARIO</h2>
-    <p class="text-white-50 small mb-4">I.E. JUANA CERVANTES DE BOLOGNESI</p>
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        padding: 40px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+    .form-control {
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 12px;
+        padding-left: 45px; /* Espacio para el icono */
+    }
+    .input-group-text {
+        background: transparent;
+        border: none;
+        position: absolute;
+        z-index: 10;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding-left: 15px;
+        color: #003366;
+    }
+    .btn-admin {
+        background: #007bff;
+        border: none;
+        border-radius: 12px;
+        transition: 0.3s;
+    }
+    .btn-admin:hover {
+        background: #0056b3;
+        transform: translateY(-2px);
+    }
+    .btn-guest {
+        border: 2px solid #ffffff;
+        border-radius: 12px;
+        color: white;
+        transition: 0.3s;
+    }
+    .btn-guest:hover {
+        background: white;
+        color: #001a33;
+    }
+</style>
+
+<div class="d-flex justify-content-center align-items-center vh-100" style="background: radial-gradient(circle, #003366 0%, #000d1a 100%);">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
-    <a href="{% url 'admin:index' %}" class="btn btn-warning w-100 rounded-pill fw-bold py-3 mb-3 shadow">
-        <i class="bi bi-person-badge me-2"></i> INICIAR SESIÓN ADMIN
-    </a>
+    <div class="glass-card text-center" style="width: 100%; max-width: 420px;">
+        <!-- LOGO CENTRADO -->
+        <img src="{% static 'inventario/logo.jpg' %}" class="mb-3 mx-auto d-block shadow-sm rounded-circle" style="width: 100px; background: white; padding: 5px;">
+        
+        <div class="mb-4">
+            <i class="fas fa-boxes fa-4x text-white mb-2"></i>
+            <h2 class="text-white fw-bold tracking-tight">SISTEMA INVENTARIO</h2>
+            <p class="text-white-50">Gestión de Equipos Tecnológicos</p>
+        </div>
+        
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3 position-relative">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" name="username" class="form-control" placeholder="Nombre de usuario" required>
+            </div>
+            <div class="mb-4 position-relative">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+            </div>
+            
+            <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-admin btn-lg text-white fw-bold">
+                    ENTRAR COMO ADMIN
+                </button>
+            </div>
+        </form>
 
-    <div class="d-flex align-items-center my-3">
-        <hr class="flex-grow-1 opacity-25">
-        <span class="mx-2 small opacity-50">O TAMBIÉN</span>
-        <hr class="flex-grow-1 opacity-25">
+        <div class="d-flex align-items-center my-4">
+            <hr class="flex-grow-1 text-white-50">
+            <span class="mx-3 text-white-50 small">O BIEN</span>
+            <hr class="flex-grow-1 text-white-50">
+        </div>
+
+        <form action="{% url 'invitado' %}" method="POST">
+            {% csrf_token %}
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-guest btn-lg fw-bold">
+                    ACCESO INVITADO
+                </button>
+            </div>
+        </form>
     </div>
-
-    <a href="{% url 'invitado' %}" class="btn btn-outline-light w-100 rounded-pill py-2">
-        Entrar como Invitado
-    </a>
 </div>
 {% endblock %}

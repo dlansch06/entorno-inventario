@@ -55,5 +55,22 @@
     }
     updateDate();
     setInterval(updateDate, 60000);
+    const ctx = document.getElementById('inventoryChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Disponibles', 'En Uso', 'Mantenimiento'],
+            datasets: [{
+                label: 'Equipos',
+                data: [{{ disponible }}, {{ en_uso }}, {{ mantenimiento }}],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                borderRadius: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
 </script>
 {% endblock %}

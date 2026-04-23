@@ -1,0 +1,32 @@
+/* Agrega esto al final de inventario/static/inventario/estilos.css */
+
+/* 1. CABECERA (Azul y Dorado) */
+#header {
+    background: #003366 !important;
+    color: #ffffff !important;
+    border-bottom: 4px solid #C5A059 !important;
+}
+
+/* 2. BARRA LATERAL (Negra) */
+#nav-sidebar, aside.main-content, .main > .content {
+    background-color: #1a1a1a !important;
+}
+
+/* 3. LOGO EN EL ADMIN (Referencia correcta) */
+#branding h1::before {
+    content: "";
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+    /* Al estar en la misma carpeta, la ruta es simple */
+    background: url("../logo.jpg") no-repeat center !important; 
+    background-size: contain !important;
+    vertical-align: middle;
+}
+
+/* 4. TÍTULOS DE MÓDULOS */
+.module h2, .module caption {
+    background: #003366 !important;
+    color: #C5A059 !important;
+}

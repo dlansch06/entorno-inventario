@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Q
 from django.http import HttpResponse
 from .models import Equipo
-
+from django.contrib import messages
 # Librerías para PDF y Excel
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
@@ -15,19 +15,22 @@ from openpyxl import Workbook
 # --- 1. AUTENTICACIÓN Y ACCESO ---
 
 def login_view(request):
-    """Muestra la pantalla azul. Si ya hay sesión, salta al dashboard."""
-    if request.user.is_authenticated or request.session.get('es_invitado'): 
-        return redirect('dashboard')
+    if request.user.is_authenticated:
+        return redirect('/admin/') if request.user.is_staff else redirect('dashboard')
     
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            auth_login(request, form.get_user())
+            user = form.get_user()
+            auth_login(request, user)
+            if user.is_staff:
+                return redirect('/admin/')
             return redirect('dashboard')
-    else:
-        form = AuthenticationForm()
-    
-    return render(request, 'login.html', {'form': form})
+        else:
+            # Esto avisa si los datos están mal
+            messages.error(request, "Usuario o contraseña incorrectos.")
+            
+    return render(request, 'login.html')
 
 def invitado_view(request):
     """Crea una sesión temporal para invitados sin necesidad de contraseña."""
