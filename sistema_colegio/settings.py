@@ -78,7 +78,8 @@ WSGI_APPLICATION = 'sistema_colegio.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://bettynoa:JuPaXNAnCtYjBW6uIKBqHf1jUNuiUKpk@dpg-d7lqlfgg4nts73bakhk0-a.oregon-postgres.render.com/sistema_inventario_kl2q' # PEGA AQUÍ TU URL EXTERNA
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600
     )
 }
 
