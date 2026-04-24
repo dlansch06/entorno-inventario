@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
-from pathlib import Path
+import dj_database_url
 
+from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -76,16 +77,10 @@ WSGI_APPLICATION = 'sistema_colegio.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        'USER': 'postgres',
-        'PASSWORD': '2406',
-        'HOST': 'localhost',
-        'PORT': '5432', 
-    }
+    'default': dj_database_url.config(
+        default='postgresql://bettynoa:JuPaXNAnCtYjBW6uIKBqHf1jUNuiUKpk@dpg-d7lqlfgg4nts73bakhk0-a.oregon-postgres.render.com/sistema_inventario_kl2q' # PEGA AQUÍ TU URL EXTERNA
+    )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
