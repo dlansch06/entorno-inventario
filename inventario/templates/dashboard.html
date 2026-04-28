@@ -2,75 +2,111 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid p-4" style="position: relative; min-height: 90vh;">
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; pointer-events: none;">
-        <img src="{% static 'inventario/logo.jpg' %}" alt="Fondo" style="width: 550px; opacity: 0.12;">
-    </div>
-
-    <div style="position: relative; z-index: 1;">
-        <div class="d-flex justify-content-between align-items-center mb-5 bg-white p-4 rounded-4 shadow-sm border">
-            <div>
-                <i class="bi bi-calendar3 me-2 text-primary"></i>
-                <span id="real-time-date" class="fw-bold text-secondary fs-5">Cargando fecha...</span>
-            </div>
-            <div class="badge bg-primary rounded-pill px-4 py-2 fs-6 shadow-sm">
-                <i class="bi bi-person-circle me-2"></i>
-                {% if request.session.es_invitado %} Invitado {% else %} {{ user.username }} {% endif %}
+<div class="container-fluid p-4">
+    <div class="row g-4 mb-4">
+        <div class="col-md-8">
+            <div class="card border-0 rounded-4 shadow-sm overflow-hidden bg-white h-100">
+                <div class="row g-0 h-100">
+                    <div class="col-md-7 p-4 d-flex flex-column justify-content-center">
+                        <h2 class="fw-bold text-dark mb-3">Gestión completa del inventario</h2>
+                        <p class="text-muted small mb-4">Herramientas integrales para el control y seguimiento de equipos electrónicos del colegio.</p>
+                        
+                        <div class="row g-3">
+                            <div class="col-6 d-flex align-items-center">
+                                <div class="bg-primary-subtle p-2 rounded-3 me-2"><i class="bi bi-plus-lg text-primary"></i></div>
+                                <span class="small fw-bold">Registro de equipos</span>
+                            </div>
+                            <div class="col-6 d-flex align-items-center">
+                                <div class="bg-warning-subtle p-2 rounded-3 me-2"><i class="bi bi-geo-alt text-warning"></i></div>
+                                <span class="small fw-bold">Asignación a aulas</span>
+                            </div>
+                            <div class="col-6 d-flex align-items-center">
+                                <div class="bg-success-subtle p-2 rounded-3 me-2"><i class="bi bi-check2-circle text-success"></i></div>
+                                <span class="small fw-bold">Control de estado</span>
+                            </div>
+                            <div class="col-6 d-flex align-items-center">
+                                <div class="bg-info-subtle p-2 rounded-3 me-2"><i class="bi bi-file-earmark-pdf text-info"></i></div>
+                                <span class="small fw-bold">Reportes exportables</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <img src="{% static 'inventario/portada.jpg' %}" alt="Dashboard" class="img-fluid h-100" style="object-fit: center/cover;">
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-md-8">
-                <div class="card border-0 rounded-4 shadow-sm p-4 h-100">
-                    <h4 class="fw-bold mb-4 border-bottom pb-2">Resumen de Inventario</h4>
-                    <div class="d-flex justify-content-around text-center py-3">
-                        <div><h1 class="display-4 fw-bold text-dark">{{ total }}</h1><p class="text-muted">Total Laptops</p></div>
-                        <div><h1 class="display-4 fw-bold text-success">{{ disponible }}</h1><p class="text-success">Disponible</p></div>
-                        <div><h1 class="display-4 fw-bold text-warning">{{ en_uso }}</h1><p class="text-warning">En Uso</p></div>
-                        <div><h1 class="display-4 fw-bold text-danger">{{ mantenimiento }}</h1><p class="text-danger">En Mantenimiento</p></div>
-                        <div><h1 class="display-4 fw-bold text-secondary">{{ no_existe }}</h1><p class="text-secondary">No Existe</p></div>
-                    </div>
-                </div>
+        <div class="col-md-4">
+            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100">
+                <h6 class="fw-bold mb-3 text-muted">Distribución de Equipos</h6>
+                <canvas id="inventoryChart" style="max-height: 200px;"></canvas>
             </div>
-            <div class="col-md-4">
-                <div class="card border-0 rounded-4 shadow p-4 bg-danger text-white h-100 d-flex flex-column">
-                    <h5 class="fw-bold mb-3">Acciones Críticas</h5>
-                    <p class="small opacity-75">Acceso restringido para Administradores.</p>
-                    <div class="mt-auto">
-                        <button class="btn btn-outline-light rounded-pill w-100">Ver historial</button>
-                    </div>
-                </div>
-            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4 text-center">
+        <div class="col"><div class="card border-0 shadow-sm p-3 rounded-4"> <h2 class="fw-bold mb-0">{{ total }}</h2> <small class="text-muted fw-bold">TOTAL</small> </div></div>
+        <div class="col"><div class="card border-0 shadow-sm p-3 rounded-4 border-bottom border-success border-4"> <h2 class="fw-bold mb-0 text-success">{{ disponible }}</h2> <small class="text-muted fw-bold">DISPONIBLES</small> </div></div>
+        <div class="col"><div class="card border-0 shadow-sm p-3 rounded-4 border-bottom border-warning border-4"> <h2 class="fw-bold mb-0 text-warning">{{ en_uso }}</h2> <small class="text-muted fw-bold">ASIGNADOS</small> </div></div>
+        <div class="col"><div class="card border-0 shadow-sm p-3 rounded-4 border-bottom border-danger border-4"> <h2 class="fw-bold mb-0 text-danger">{{ mantenimiento }}</h2> <small class="text-muted fw-bold">REPARACIÓN</small> </div></div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 bg-white">
+        <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0">Vista previa del inventario</h5>
+            <a href="{% url 'inventario' %}" class="btn btn-sm btn-outline-primary rounded-pill">Ver inventario completo →</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr class="small text-muted">
+                        <th class="ps-4">N° SERIE</th>
+                        <th>MODELO</th>
+                        <th>ESTADO</th>
+                        <th>UBICACIÓN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in equipos_recientes %}
+                    <tr>
+                        <td class="ps-4 fw-bold text-secondary">{{ e.serie }}</td>
+                        <td>{{ e.modelo }}</td>
+                        <td>
+                            <span class="badge rounded-pill {% if e.estado == 'DISPONIBLE' %}bg-success-subtle text-success{% else %}bg-primary-subtle text-primary{% endif %} px-3">
+                                <i class="bi bi-circle-fill me-1 small"></i> {{ e.estado }}
+                            </span>
+                        </td>
+                        <td>{{ e.aula }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    function updateDate() {
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        let dateStr = now.toLocaleDateString('es-ES', options);
-        dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-        document.getElementById('real-time-date').innerText = dateStr;
-    }
-    updateDate();
-    setInterval(updateDate, 60000);
     const ctx = document.getElementById('inventoryChart').getContext('2d');
     new Chart(ctx, {
-        type: 'bar',
+        type: 'doughnut',
         data: {
-            labels: ['Disponibles', 'En Uso', 'Mantenimiento'],
+            labels: ['Disponible', 'Asignado', 'Reparación'],
             datasets: [{
-                label: 'Equipos',
                 data: [{{ disponible }}, {{ en_uso }}, {{ mantenimiento }}],
-                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
-                borderRadius: 10
+                backgroundColor: ['#198754', '#0d6efd', '#ffc107'],
+                borderWidth: 0
             }]
         },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } }
-        }
+        options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
     });
 </script>
+
+<style>
+    .bg-primary-subtle { background-color: #cfe2ff !important; }
+    .bg-success-subtle { background-color: #d1e7dd !important; }
+    .bg-warning-subtle { background-color: #fff3cd !important; }
+    .bg-info-subtle { background-color: #cff4fc !important; }
+</style>
 {% endblock %}

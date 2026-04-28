@@ -46,9 +46,13 @@
                 </li>
                 <li class="nav-item mb-2">
                     <a href="{% url 'reportes' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'reportes' %}active{% endif %}">
-                        <i class="bi bi-laptop me-2"></i> EQUIPOS
+                        <i class="bi bi-laptop me-2"></i> REPORTES
                     </a>
                 </li>
+                <li class="nav-item mb-2">
+                    <a href="{% url 'inventario' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'inventario' %}active{% endif %}">
+                        <i class="bi bi-box-seam me-2"></i> INVENTARIO de EQUIPOS
+                    </a>
             </ul>
 
             <div class="border-top pt-3">
