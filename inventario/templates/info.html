@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Mejora de interactividad para las tarjetas de contacto */
+    .contact-card {
+        transition: transform 0.2s ease, shadow 0.2s ease;
+        cursor: default;
+    }
+    .contact-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    /* Asegura que el mapa ocupe todo el espacio disponible */
+    .map-container {
+        min-height: 450px;
+        height: 100%;
+    }
+</style>
+
+<div class="container-fluid p-4">
+    <!-- Encabezado con Breadcrumb mejorado -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb small">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Inicio</a></li>
+                <li class="breadcrumb-item active text-muted">Acerca del Colegio</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark">Información Institucional</h2>
+    </div>
+
+    <!-- Sección de Información Principal: Diseño Limpio -->
+    <div class="card border-0 rounded-4 shadow-sm overflow-hidden bg-white mb-5">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-7 p-4 p-lg-5">
+                <span class="text-danger fw-bold small text-uppercase mb-2 d-block">Institución Educativa</span>
+                <h3 class="fw-bold mb-4 display-6">Colegio Nacional Juana Cervantes</h3>
+                <p class="text-muted fs-5">Emblemática institución educativa de Arequipa, comprometida con la excelencia en los niveles de primaria y secundaria.</p>
+                <a href="https://facebook.com/JuanaCervantesAQP" target="_blank" class="btn btn-primary rounded-pill px-4 py-2 mt-3 shadow-sm">
+                    <i class="bi bi-facebook me-2"></i> Visitar nuestra Comunidad
+                </a>
+            </div>
+            <div class="col-lg-5">
+                <img src="{% static 'inventario/colegio.png' %}" class="img-fluid h-100 w-100" style="object-fit: cover; min-height: 350px;" alt="Fachada Colegio">
+            </div>
+        </div>
+    </div>
+
+    <!-- Misión y Visión: Tarjetas equilibradas -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 border-top border-primary border-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary-subtle p-3 rounded-circle me-3"><i class="bi bi-bullseye text-primary fs-4"></i></div>
+                    <h4 class="fw-bold mb-0">Misión</h4>
+                </div>
+                <p class="text-muted">Formar jóvenes íntegros y responsables, proporcionando herramientas tecnológicas modernas y sólidos valores éticos para el futuro.</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 border-top border-warning border-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-warning-subtle p-3 rounded-circle me-3"><i class="bi bi-eye text-warning fs-4"></i></div>
+                    <h4 class="fw-bold mb-0">Visión</h4>
+                </div>
+                <p class="text-muted">Ser reconocidos como una institución líder en innovación pedagógica y formación de líderes íntegros en la región sur del país.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAYECTORIA INSTITUCIONAL: Enfoque de lectura[cite: 2] -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card border-0 rounded-4 shadow-sm p-4 p-lg-5 bg-white shadow-lg">
+                <div class="text-center mb-4">
+                    <span class="text-danger fw-bold small text-uppercase">Nuestra Historia</span>
+                    <h3 class="fw-bold text-dark">Trayectoria e Identidad</h3>
+                </div>
+                <div class="text-muted lh-lg fs-6">
+                    <p>El Colegio Nacional Juana Cervantes tiene sus raíces en el compromiso histórico de Arequipa con la educación pública de calidad. A lo largo de los años, hemos evolucionado para adaptarnos a las necesidades de nuestra comunidad, manteniendo la excelencia y disciplina.</p>
+                    <p>En la actualidad, modernizamos nuestros procesos con este <strong>Sistema de Inventario</strong>, integrando la tecnología en la gestión educativa para beneficio de todos nuestros estudiantes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACTO Y MAPA: Optimizado para interacción[cite: 1, 2] -->
+    <div class="row g-4 mt-2">
+        <div class="col-lg-5">
+            <span class="text-danger fw-bold small text-uppercase">Contacto</span>
+            <h3 class="fw-bold text-dark mb-4">Ponte en contacto</h3>
+            
+            <div class="d-flex flex-column gap-3">
+                <!-- Tarjetas de contacto mejoradas -->
+                <div class="contact-card d-flex align-items-center p-3 bg-white rounded-4 shadow-sm border-start border-primary border-4">
+                    <div class="bg-primary-subtle p-3 rounded-3 me-3 text-primary"><i class="bi bi-geo-alt-fill"></i></div>
+                    <div><h6 class="fw-bold mb-0">Dirección</h6><small class="text-muted">Av. La marina, Arequipa, Perú</small></div>
+                </div>
+
+                <div class="contact-card d-flex align-items-center p-3 bg-white rounded-4 shadow-sm border-start border-success border-4">
+                    <div class="bg-success-subtle p-3 rounded-3 me-3 text-success"><i class="bi bi-envelope-fill"></i></div>
+                    <div><h6 class="fw-bold mb-0">Correo</h6><small class="text-muted">juanacervantesbolognesi@gmail.com</small></div>
+                </div>
+
+                <div class="contact-card d-flex align-items-center p-3 bg-white rounded-4 shadow-sm border-start border-info border-4">
+                    <div class="bg-info-subtle p-3 rounded-3 me-3 text-info"><i class="bi bi-clock-fill"></i></div>
+                    <div><h6 class="fw-bold mb-0">Horario</h6><small class="text-muted">Lun - Vie: 7:00 AM - 5:00 PM</small></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ubicación en Mapa: Lado derecho e Interactivo[cite: 2] -->
+        <div class="col-lg-7">
+            <h3 class="fw-bold text-dark mb-4">Ubicación en Mapa</h3>
+            <div class="card border-0 rounded-4 shadow-sm overflow-hidden map-container">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3827.365319803126!2d-71.5286523!3d-16.4063236!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91424b13a3642307%3A0x6b42b93e430f06f5!2sColegio%20Nacional%20Juana%20Cervantes!5e0!3m2!1ses-419!2spe!4v1714500000000!5m2!1ses-419!2spe" 
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

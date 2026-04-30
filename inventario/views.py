@@ -120,7 +120,15 @@ def reportes_view(request):
         'estado_actual': estado
     })
 
-
+def acerca_de_view(request):
+    if not request.user.is_authenticated and not request.session.get('es_invitado'):
+        return redirect('login')
+    
+    
+    return render(request, 'info.html')
+    
+    
+    return render(request, 'info.html')
 def exportar_excel(queryset):
     wb = Workbook()
     ws = wb.active
@@ -197,7 +205,7 @@ def exportar_excel(queryset):
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=Reporte_Inventario_JC.xlsx'
     wb.save(response)
-    return response
+    return response          
     
 
 def exportar_pdf(queryset):

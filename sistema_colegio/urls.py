@@ -31,5 +31,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('reportes/', views.reportes_view, name='reportes'),
     path('equipos/', views.inventario_view, name='inventario'),
+    path('acerca-del-colegio/', views.acerca_de_view, name='info'),
     path('logout/', views.logout_view, name='logout'),
 ]

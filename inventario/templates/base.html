@@ -3,62 +3,185 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>SIS-INVENTARIO J.C.</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
     <style>
-        body { margin: 0; background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
-        .sidebar { width: 280px; height: 100vh; background: #1a1a1a; position: fixed; z-index: 1000; }
-        .main-content { margin-left: 280px; min-height: 100vh; padding: 20px; }
-        .login-screen { width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #00264d; }
-        .nav-link:hover { background: rgba(255,255,255,0.1); border-radius: 50px; }
-        .nav-link.active { background: #0d6efd !important; border-radius: 50px; }
+        :root {
+            --sidebar-bg: #1a1a1a;
+            --primary-blue: #0d6efd;
+            --sidebar-width: 280px;
+        }
+
+        body { 
+            margin: 0; 
+            background-color: #f8f9fa; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR (Escritorio) --- */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            height: 100vh; 
+            background: var(--sidebar-bg); 
+            position: fixed; 
+            z-index: 1050; 
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            flex-column: column;
+        }
         
-        /* Estilo para que el logo resalte */
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content { 
+            margin-left: var(--sidebar-width); 
+            min-height: 100vh; 
+            padding: 25px; 
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Estilos de Navegación */
+        .nav-link {
+            transition: all 0.2s;
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
+        .nav-link:hover { 
+            background: rgba(255,255,255,0.1); 
+            transform: translateX(5px);
+        }
+        .nav-link.active { 
+            background: var(--primary-blue) !important; 
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+        }
+        
+        /* Logo Mejorado */
         .sidebar-logo {
-            width: 100px; /* Tamaño notorio */
+            width: 140px; /* Tamaño grande pedido */
             height: auto;
             margin-bottom: 15px;
-            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5)); /* Le da profundidad y nitidez */
+            filter: drop-shadow(0px 6px 12px rgba(0,0,0,0.6));
             display: block;
             margin-left: auto;
             margin-right: auto;
+            transition: transform 0.3s;
+        }
+        .sidebar-logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- RESPONSIVIDAD (Celulares y Tablets) --- */
+        @media (max-width: 991.98px) {
+            .sidebar { 
+                margin-left: calc(-1 * var(--sidebar-width)); /* Esconde sidebar */
+            }
+            .sidebar.active {
+                margin-left: 0; /* Muestra sidebar al activar */
+            }
+            .main-content { 
+                margin-left: 0; 
+                padding-top: 80px; /* Espacio para el header móvil */
+            }
+            .mobile-header {
+                display: flex !important;
+            }
+        }
+        
+        /* Header exclusivo para móvil */
+        .mobile-header {
+            display: none;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 12px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1040;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .login-screen { 
+            width: 100%; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #00264d 0%, #001a33 100%); 
+        }
+
+        /* Overlay para cerrar el menú al tocar fuera en móvil */
+        #sidebarOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 1045;
+        }
+        #sidebarOverlay.active {
+            display: block;
         }
     </style>
 </head>
 <body>
 
     {% if user.is_authenticated or request.session.es_invitado %}
-        <div class="sidebar text-white p-4 d-flex flex-column shadow">
+        
+        <div class="mobile-header">
+            <div class="d-flex align-items-center">
+                <img src="{% static 'inventario/logo.jpg' %}" alt="Logo" style="width: 35px; margin-right: 10px; border-radius: 5px;">
+                <h5 class="m-0 fw-bold small">SIS-INVENTARIO</h5>
+            </div>
+            <button class="btn btn-outline-light border-0" id="sidebarToggle">
+                <i class="bi bi-list fs-2"></i>
+            </button>
+        </div>
+
+        <div id="sidebarOverlay"></div>
+
+        <div class="sidebar text-white p-4 d-flex flex-column shadow" id="sidebar">
             
-            <div class="text-center">
+            <div class="text-center mb-4">
                 <img src="{% static 'inventario/logo.jpg' %}" alt="Logo Colegio" class="sidebar-logo">
-                <h3 class="fw-bold mb-1">SIS-INVENTARIO</h3>
-                <p class="text-white-50 small mb-5">I.E. Juana Cervantes</p>
+                <h4 class="fw-bold mb-1">SIS-INVENTARIO</h4>
+                <p class="text-white-50 small">I.E. Juana Cervantes</p>
             </div>
             
             <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item mb-2">
+                <li class="nav-item">
                     <a href="{% url 'dashboard' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                         <i class="bi bi-speedometer2 me-2"></i> PANEL
                     </a>
                 </li>
-                <li class="nav-item mb-2">
+                <li class="nav-item">
                     <a href="{% url 'reportes' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'reportes' %}active{% endif %}">
-                        <i class="bi bi-laptop me-2"></i> REPORTES
+                        <i class="bi bi-file-earmark-bar-graph me-2"></i> REPORTES
                     </a>
                 </li>
-                <li class="nav-item mb-2">
+                <li class="nav-item">
                     <a href="{% url 'inventario' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'inventario' %}active{% endif %}">
-                        <i class="bi bi-box-seam me-2"></i> INVENTARIO de EQUIPOS
+                        <i class="bi bi-box-seam me-2"></i> INVENTARIO
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'info' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'info' %}active{% endif %}">
+                        <i class="bi bi-info-circle me-2"></i> ACERCA DEL COLEGIO
+                    </a>    
+                </li>
             </ul>
 
             <div class="border-top pt-3">
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-link text-warning text-decoration-none fw-bold p-0">
+                    <button type="submit" class="btn btn-outline-warning w-100 border-0 text-start fw-bold p-3">
                         <i class="bi bi-box-arrow-left me-2"></i> CERRAR SESIÓN
                     </button>
                 </form>
@@ -66,15 +189,41 @@
         </div>
 
         <div class="main-content">
-            {% block content %}{% endblock %}
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
         </div>
 
     {% else %}
-        <div class="login-screen">
+        <div class="login-screen p-3">
             {% block guest_content %}{% endblock %}
         </div>
     {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const btnToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        if(btnToggle) {
+            btnToggle.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+        }
+
+        // Cerrar menú automáticamente si se cambia el tamaño de pantalla a PC
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 992) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
