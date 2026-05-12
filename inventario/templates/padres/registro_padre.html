@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4 p-4">
+                <div class="text-center mb-4">
+                    <div class="bg-primary bg-opacity-10 d-inline-block p-3 rounded-circle mb-3">
+                        <i class="bi bi-person-plus text-primary fs-2"></i>
+                    </div>
+                    <h2 class="fw-bold">Registro de Familia</h2>
+                    <p class="text-muted">Vincula tu cuenta para ver datos reales y comunicados oficiales.</p>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">DNI del Padre/Madre</label>
+                        <input type="text" name="dni_padre" class="form-control form-control-lg bg-light" placeholder="8 dígitos" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre Completo</label>
+                        <input type="text" name="nombre" class="form-control form-control-lg bg-light" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Código del Estudiante (Hija)</label>
+                        <input type="text" name="codigo_hija" class="form-control form-control-lg bg-light" placeholder="Ej: EST-2026" required>
+                        <small class="text-muted">Este código lo encuentras en la libreta física.</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3">
+                        Registrar y Ver Comunicados
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

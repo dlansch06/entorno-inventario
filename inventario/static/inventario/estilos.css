@@ -1,129 +1,222 @@
-:root {
-    --primary: #0b1a5a;
-    --secondary: #1a2b8f;
-    --bg: #0f1f6b;
-    --card-bg: #ffffff;
-    --text: #ffffff;
+body{
+    font-family:'Inter',sans-serif;
+    background:#f4f7fb;
 }
 
-/* ===== GLOBAL ===== */
-body {
-    background: linear-gradient(135deg, #0b1a5a, #0f1f6b);
-    color: var(--text);
-    font-family: 'Segoe UI', sans-serif;
+.dashboard{
+    margin:-25px;
 }
 
-/* ===== NAVBAR ===== */
-.main-header {
-    background: transparent !important;
-    border: none;
+/* HERO */
+
+.hero{
+    padding:80px 60px;
+    border-radius:0 0 40px 40px;
+    background:linear-gradient(135deg,#0f172a,#1d4ed8);
+    color:white;
 }
 
-.user-info {
-    font-weight: 500;
+.hero h1{
+    font-size:4rem;
+    font-weight:800;
+    line-height:1.1;
 }
 
-/* ===== SIDEBAR ===== */
-.main-sidebar {
-    background: var(--primary) !important;
-    box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+.hero p{
+    font-size:1.1rem;
+    opacity:.85;
+    margin-top:20px;
 }
 
-.sidebar-logo {
-    width: 90px;
-    margin: 10px auto;
-    display: block;
+.badge-school{
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(255,255,255,.15);
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:25px;
 }
 
-.nav-sidebar .nav-link {
-    color: #cfd8ff !important;
-    transition: all 0.3s ease;
+.hero-buttons{
+    margin-top:35px;
+    display:flex;
+    gap:15px;
 }
 
-.nav-sidebar .nav-link:hover {
-    background: rgba(255,255,255,0.08);
-    border-radius: 30px;
-    padding-left: 18px;
+.video-box{
+    padding:10px;
+    border-radius:28px;
+    background:rgba(255,255,255,.08);
 }
 
-.nav-sidebar .nav-link.active {
-    background: var(--secondary);
-    border-radius: 30px;
+.video-box video{
+    width:100%;
+    border-radius:20px;
 }
 
-/* ===== CONTENIDO ===== */
-.content-wrapper {
-    background: transparent !important;
-    padding: 15px;
+/* SECTION */
+
+.section{
+    padding:80px 40px;
 }
 
-/* ===== TITULOS ===== */
-.page-title {
-    color: #ffffff;
-    font-weight: bold;
+.section-header{
+    text-align:center;
+    margin-bottom:50px;
 }
 
-/* ===== CARDS ===== */
-.card {
-    border-radius: 15px;
-    border: none;
-    background: var(--card-bg);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    transition: 0.3s;
+.section-header h2{
+    font-size:2.5rem;
+    font-weight:800;
+    color:#0f172a;
 }
 
-.card:hover {
-    transform: translateY(-4px);
+.section-header p{
+    color:#64748b;
 }
 
-/* ===== BOTONES ===== */
-.btn {
-    border-radius: 10px;
+/* DASHBOARD CARDS */
+
+.dashboard-card{
+    background:#fff;
+    padding:30px;
+    border-radius:24px;
+    height:100%;
+    transition:.3s;
+    box-shadow:0 10px 30px rgba(0,0,0,.05);
 }
 
-.btn-primary {
-    background: linear-gradient(45deg, #2d6cdf, #1a4ed8);
-    border: none;
+.dashboard-card:hover{
+    transform:translateY(-8px);
 }
 
-/* ===== TABLAS ===== */
-.table {
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
+.dashboard-card h4{
+    font-weight:700;
 }
 
-.table thead {
-    background: var(--primary);
-    color: #fff;
+.dashboard-card p{
+    color:#64748b;
 }
 
-.table tbody tr:hover {
-    background: rgba(0,0,0,0.03);
-/* ===== LOGIN FIX ===== */
-.login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+/* ICON */
+
+.icon{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    margin-bottom:20px;
 }
 
-/* Quitar sidebar/layout en login */
-.login-page .main-sidebar,
-.login-page .main-header,
-.login-page .main-footer {
-    display: none;
+/* SCHOOL */
+
+.school-card{
+    position:relative;
+    height:300px;
+    overflow:hidden;
+    border-radius:24px;
+    cursor:pointer;
 }
 
-.login-page .content-wrapper {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: transparent !important;
+.school-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.5s;
 }
 
-/* Centrado real */
-.login-container {
-    width: 100%;
-    max-width: 420px;
-}    
+.school-card:hover img{
+    transform:scale(1.08);
+}
+
+.school-overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.55));
+}
+
+.school-overlay h3{
+    color:#fff;
+    font-size:2rem;
+    font-weight:800;
+}
+
+/* VIDEO SECTION */
+
+.video-section{
+    border-radius:35px;
+    overflow:hidden;
+    color:white;
+    background:linear-gradient(135deg,#1d4ed8,#0f172a);
+}
+
+.video-section h2{
+    font-size:3rem;
+    font-weight:800;
+}
+
+.video-section p{
+    opacity:.8;
+    font-size:1.1rem;
+    margin:25px 0;
+}
+
+.video-preview{
+    position:relative;
+    display:block;
+    height:100%;
+}
+
+.video-preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    min-height:400px;
+    transition:.4s;
+}
+
+.video-preview:hover img{
+    transform:scale(1.05);
+}
+
+.video-overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.5));
+}
+
+.play-btn{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:rgba(255,255,255,.2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:3rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 991.98px) {
+    .sidebar.active {
+        margin-left: 0 !important;
+        transform: translateX(0);
+    }
+}
+
+/* Opcional: Si quieres que el botón funcione también en escritorio para esconderla */
+.sidebar.active {
+    margin-left: calc(-1 * var(--sidebar-width));
 }

@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    :root { --primary-blue: #1d4ed8; --bg-light: #f8fafc; }
+    body { background-color: var(--bg-light); }
+    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .header-table { background-color: #1e40af; color: white; border-radius: 8px 8px 0 0; }
+    .badge-status { border-radius: 20px; padding: 4px 12px; font-size: 0.85rem; }
+    .status-aprobado { background-color: #dcfce7; color: #166534; }
+    .historical-card { border-left: 4px solid #1e40af; background: white; transition: transform 0.2s; }
+    .historical-card:hover { transform: translateY(-5px); }
+</style>
+
+<div class="container py-5">
+    <!-- SECCIÓN: ACCESO A NOTAS (Imagen {5E61B402-3977-4BD1-B58A-3DDA3DAAFC02}.png) -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card card-custom p-4">
+                <div class="text-center mb-4">
+                    <div class="bg-blue-100 rounded-circle d-inline-block p-3 mb-2">
+                        <i class="bi bi-mortarboard-fill text-primary fs-2"></i>
+                    </div>
+                    <h2 class="fw-bold">Acceso a Notas</h2>
+                    <p class="text-muted">Ingresa los datos del estudiante para consultar sus calificaciones</p>
+                </div>
+
+                <form method="POST" action="{% if es_invitado %}{% url 'registro_padre' %}{% endif %}">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Tipo de Documento</label>
+                            <select class="form-select">
+                                <option>DNI del Padre/Madre</option>
+                                <option>Código del Estudiante</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Número de Documento</label>
+                            <input type="text" class="form-control" placeholder="Ingresa tu DNI o código">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Nombre del Estudiante</label>
+                            <input type="text" class="form-control" placeholder="Nombre completo de la estudiante">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Período Académico</label>
+                            <select class="form-select">
+                                <option>2025 - I Bimestre</option>
+                                <option>2025 - II Bimestre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-4 py-2 fw-bold" style="background-color: #1e40af;">
+                        <i class="bi bi-search me-2"></i> Consultar Notas
+                    </button>
+                </form>
+
+                <div class="alert alert-warning mt-4 border-0 shadow-sm" style="background-color: #fffbeb;">
+                    <div class="d-flex">
+                        <i class="bi bi-info-circle-fill text-warning me-2 fs-5"></i>
+                        <div>
+                            <p class="mb-1 fw-bold text-warning-emphasis">¿Necesitas ayuda para acceder?</p>
+                            <small class="text-muted">Si no recuerdas tu código personal o tienes problemas, contacta a dirección.</small>
+                            <br><a href="#" class="small fw-bold text-decoration-none">Ver guía de acceso &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN: TABLA DE CALIFICACIONES (Imagen {6AB43CE5-154E-466D-AC03-49579537FFE9}.png) -->
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <div>
+            <h3 class="fw-bold mb-0">Calificaciones del Período</h3>
+            <span class="text-muted">2025 - I Bimestre | 5to Grado de Secundaria</span>
+        </div>
+        <div>
+            <button class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-download"></i> Descargar PDF</button>
+            <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-printer"></i> Imprimir</button>
+        </div>
+    </div>
+
+    <div class="card card-custom mb-4 overflow-hidden">
+        <div class="p-3 border-bottom bg-white">
+            <div class="row">
+                <div class="col-md-4">
+                    <small class="text-muted d-block">Estudiante</small>
+                    <span class="fw-bold">{% if es_invitado %}María Fernanda López García{% else %}{{ user.first_name }} {{ user.last_name }}{% endif %}</span>
+                </div>
+                <div class="col-md-4 border-start border-end">
+                    <small class="text-muted d-block">Grado y Sección</small>
+                    <span class="fw-bold">5to "A" - Secundaria</span>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted d-block">Promedio General</small>
+                    <span class="fw-bold fs-4 text-primary">{% if es_invitado %}16.8{% else %}{{ promedio_base }}{% endif %}</span>
+                </div>
+            </div>
+        </div>
+
+       <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Área Curricular</th>
+                        <th class="text-center">I Bim.</th>
+                        <th class="text-center">II Bim.</th>
+                        <th class="text-center">III Bim.</th>
+                        <th class="text-center">IV Bim.</th>
+                        <th class="text-center">Promedio</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Datos Falsos para el Ejemplo/Invitado -->
+                    <tr>
+                        <td>Matemática</td>
+                        <td class="text-center text-muted">16</td>
+                        <td class="text-center text-muted">17</td>
+                        <td class="text-center text-muted">18</td>
+                        <td class="text-center text-muted">17</td>
+                        <td class="text-center fw-bold">17.0</td>
+                        <td class="text-center"><span class="badge-aprobado">Aprobado</span></td>
+                    </tr>
+                    <tr>
+                        <td>Comunicación</td>
+                        <td class="text-center text-muted">18</td>
+                        <td class="text-center text-muted">19</td>
+                        <td class="text-center text-muted">18</td>
+                        <td class="text-center text-muted">19</td>
+                        <td class="text-center fw-bold">18.5</td>
+                        <td class="text-center"><span class="badge-aprobado">Aprobado</span></td>
+                    </tr>
+                    <tr>
+                        <td>Ciencias Naturales</td>
+                        <td class="text-center text-muted">15</td>
+                        <td class="text-center text-muted">16</td>
+                        <td class="text-center text-muted">17</td>
+                        <td class="text-center text-muted">16</td>
+                        <td class="text-center fw-bold">16.0</td>
+                        <td class="text-center"><span class="badge-aprobado">Aprobado</span></td>
+                    </tr>
+                    <tr>
+                        <td>Inglés</td>
+                        <td class="text-center text-muted">14</td>
+                        <td class="text-center text-muted">15</td>
+                        <td class="text-center text-muted">16</td>
+                        <td class="text-center text-muted">15</td>
+                        <td class="text-center fw-bold">15.0</td>
+                        <td class="text-center"><span class="badge-apoyo">Necesita apoyo</span></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="row-total">
+                        <td>Promedio General</td>
+                        <td class="text-center">16.7</td>
+                        <td class="text-center">17.4</td>
+                        <td class="text-center">17.9</td>
+                        <td class="text-center">17.4</td>
+                        <td class="text-center text-primary">17.4</td>
+                        <td class="text-center"><span class="badge-aprobado">Aprobado</span></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="d-flex mt-3">
+            <div class="legend-item"><span class="dot bg-success"></span> Aprobado (≥13)</div>
+            <div class="legend-item"><span class="dot bg-warning"></span> Necesita apoyo (10-12)</div>
+            <div class="legend-item"><span class="dot bg-danger"></span> Desaprobado (<10)</div>
+        </div>
+    </div>
+                <tbody>
+                    {% if es_invitado %}
+                        <!-- DATOS FALSOS PARA INVITADO -->
+                        <tr><td class="text-start ps-4"><i class="bi bi-calculator me-2 text-primary"></i>Matemática</td><td>17</td><td>18</td><td>16</td><td>17</td><td class="fw-bold text-primary">17.0</td><td><span class="badge-status status-aprobado">Aprobado</span></td></tr>
+                        <tr><td class="text-start ps-4"><i class="bi bi-flask me-2 text-info"></i>Ciencias</td><td>16</td><td>17</td><td>18</td><td>16</td><td class="fw-bold text-primary">16.8</td><td><span class="badge-status status-aprobado">Aprobado</span></td></tr>
+                        <tr><td class="text-start ps-4"><i class="bi bi-translate me-2 text-warning"></i>Inglés</td><td>15</td><td>16</td><td>17</td><td>15</td><td class="fw-bold text-primary">15.8</td><td><span class="badge-status status-aprobado">Aprobado</span></td></tr>
+                    {% else %}
+                        <!-- DATOS REALES DE LA BASE DE DATOS -->
+                        {% for n in notas %}
+                        <tr>
+                            <td class="text-start ps-4">{{ n.area }}</td>
+                            <td>{{ n.p1 }}</td><td>{{ n.p2 }}</td><td>{{ n.part }}</td><td>{{ n.exam }}</td>
+                            <td class="fw-bold text-primary">{{ n.promedio }}</td>
+                            <td><span class="badge-status {% if n.promedio >= 11 %}status-aprobado{% endif %}">Aprobado</span></td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- RENDIMIENTO HISTÓRICO (Imagen {BC5C4EC3-AC64-420F-A385-416A051C7011}.png) -->
+    <h4 class="fw-bold mb-4">Rendimiento Histórico</h4>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card historical-card p-3 shadow-sm">
+                <small class="text-muted">I Bimestre 2024</small>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fs-2 fw-bold">16.2</span>
+                    <span class="text-success small fw-bold"><i class="bi bi-graph-up-arrow"></i> +0.6</span>
+                </div>
+            </div>
+        </div>
+        <!-- Repetir para los otros bimestres como en la imagen -->
+    </div>
+</div>
+{% endblock %}

@@ -2,111 +2,210 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="row g-4 mb-4">
-        <div class="col-md-8">
-            <div class="card border-0 rounded-4 shadow-sm overflow-hidden bg-white h-100">
-                <div class="row g-0 h-100">
-                    <div class="col-md-7 p-4 d-flex flex-column justify-content-center">
-                        <h2 class="fw-bold text-dark mb-3">Gestión completa del inventario</h2>
-                        <p class="text-muted small mb-4">Herramientas integrales para el control y seguimiento de equipos electrónicos del colegio.</p>
-                        
-                        <div class="row g-3">
-                            <div class="col-6 d-flex align-items-center">
-                                <div class="bg-primary-subtle p-2 rounded-3 me-2"><i class="bi bi-plus-lg text-primary"></i></div>
-                                <span class="small fw-bold">Registro de equipos</span>
-                            </div>
-                            <div class="col-6 d-flex align-items-center">
-                                <div class="bg-warning-subtle p-2 rounded-3 me-2"><i class="bi bi-geo-alt text-warning"></i></div>
-                                <span class="small fw-bold">Asignación a aulas</span>
-                            </div>
-                            <div class="col-6 d-flex align-items-center">
-                                <div class="bg-success-subtle p-2 rounded-3 me-2"><i class="bi bi-check2-circle text-success"></i></div>
-                                <span class="small fw-bold">Control de estado</span>
-                            </div>
-                            <div class="col-6 d-flex align-items-center">
-                                <div class="bg-info-subtle p-2 rounded-3 me-2"><i class="bi bi-file-earmark-pdf text-info"></i></div>
-                                <span class="small fw-bold">Reportes exportables</span>
-                            </div>
-                        </div>
+
+<link rel="stylesheet"
+href="{% static 'inventario/estilos.css' %}">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<div class="dashboard">
+    <section class="hero">
+        <div class="container-fluid">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7">
+                    <span class="badge-school">
+                        INSTITUCIÓN EDUCATIVA PÚBLICA
+                    </span>
+                    <h1>
+                        Formando Mujeres Líderes del Mañana
+                    </h1>
+                    <p>
+                        Educación moderna enfocada en liderazgo,
+                        excelencia académica y desarrollo integral.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#"
+                        class="btn btn-light btn-lg rounded-pill px-4">
+
+                            <i class="bi bi-laptop me-2"></i>
+                            Portal Académico
+
+                        </a>
+                        <a href="#"
+                        class="btn btn-outline-light btn-lg rounded-pill px-4">
+                            Conocer Más
+                        </a>
                     </div>
-                    <div class="col-md-5">
-                        <img src="{% static 'inventario/portada.jpg' %}" alt="Dashboard" class="img-fluid h-100" style="object-fit: center/cover;">
+                </div>
+                <div class="col-lg-5">
+
+                    <div class="video-box">
+                        <video autoplay muted loop controls playsinline>
+                            <source
+                            src="{% static 'inventario/video portada.mp4' %}"
+                            type="video/mp4">
+                        </video>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="col-md-4">
-            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100">
-                <h6 class="fw-bold mb-3 text-muted">Distribución de Equipos</h6>
-                <canvas id="inventoryChart" style="max-height: 200px;"></canvas>
+    <section class="section">
+        <div class="section-header">
+            <h2>
+                Acceso Rápido
+            </h2>
+            <p>
+                Herramientas académicas para toda la comunidad educativa
+            </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+                    <div class="icon bg-primary-subtle text-primary">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <h4>Consulta de Notas</h4>
+                    <p>
+                        Revisa calificaciones y reportes académicos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+                    <div class="icon bg-success-subtle text-success">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                    <h4>Asistencias</h4>
+                    <p>
+                        Consulta asistencia y puntualidad estudiantil.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+                    <div class="icon bg-warning-subtle text-warning">
+                        <i class="bi bi-calendar-event-fill"></i>
+                    </div>
+                    <h4>Calendario Escolar</h4>
+                    <p>
+                        Actividades y eventos institucionales.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+
+                    <div class="icon bg-danger-subtle text-danger">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </div>
+                    <h4>Comunicados</h4>
+                    <p>
+                        Información importante para padres y estudiantes.
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="row g-3 mb-4 text-center">
-        <div class="col"><div class="card border-0 shadow-sm p-3 rounded-4"> <h2 class="fw-bold mb-0">{{ total }}</h2> <small class="text-muted fw-bold">TOTAL</small> </div></div>
-        <div class="col"><div class="card border-0 shadow-sm p-3 rounded-4 border-bottom border-success border-4"> <h2 class="fw-bold mb-0 text-success">{{ disponible }}</h2> <small class="text-muted fw-bold">DISPONIBLES</small> </div></div>
-        <div class="col"><div class="card border-0 shadow-sm p-3 rounded-4 border-bottom border-warning border-4"> <h2 class="fw-bold mb-0 text-warning">{{ en_uso }}</h2> <small class="text-muted fw-bold">ASIGNADOS</small> </div></div>
-        <div class="col"><div class="card border-0 shadow-sm p-3 rounded-4 border-bottom border-danger border-4"> <h2 class="fw-bold mb-0 text-danger">{{ mantenimiento }}</h2> <small class="text-muted fw-bold">REPARACIÓN</small> </div></div>
-    </div>
+    </section>
 
-    <div class="card border-0 shadow-sm rounded-4 bg-white">
-        <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold mb-0">Vista previa del inventario</h5>
-            <a href="{% url 'inventario' %}" class="btn btn-sm btn-outline-primary rounded-pill">Ver inventario completo →</a>
+    <section class="section pt-0">
+        <div class="section-header">
+            <h2>
+                Vida Escolar
+            </h2>
+            <p>
+                Experiencias que inspiran y fortalecen nuestra comunidad
+            </p>
+
         </div>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
-                    <tr class="small text-muted">
-                        <th class="ps-4">N° SERIE</th>
-                        <th>MODELO</th>
-                        <th>ESTADO</th>
-                        <th>UBICACIÓN</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for e in equipos_recientes %}
-                    <tr>
-                        <td class="ps-4 fw-bold text-secondary">{{ e.serie }}</td>
-                        <td>{{ e.modelo }}</td>
-                        <td>
-                            <span class="badge rounded-pill {% if e.estado == 'DISPONIBLE' %}bg-success-subtle text-success{% else %}bg-primary-subtle text-primary{% endif %} px-3">
-                                <i class="bi bi-circle-fill me-1 small"></i> {{ e.estado }}
-                            </span>
-                        </td>
-                        <td>{{ e.aula }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="school-card">
+                    <img loading="lazy"
+                    src="{% static 'inventario/deporte.jpg' %}">
+
+                    <div class="school-overlay">
+                        <h3>Deporte</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="school-card">
+                    <img loading="lazy"
+                    src="{% static 'inventario/talento.jpg' %}">
+
+                    <div class="school-overlay">
+                        <h3>Talentos</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="school-card">
+                    <img loading="lazy"
+                    src="{% static 'inventario/ceremonia.jpg' %}">
+
+                    <div class="school-overlay">
+                        <h3>Ceremonias</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="school-card">
+                    <img loading="lazy"
+                    src="{% static 'inventario/reconocimientos.jpg' %}">
+
+                    <div class="school-overlay">
+                        <h3>Reconocimientos</h3>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+    <section class="section pt-0">
+        <div class="video-section">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-6 p-5">
+                    <h2>
+                        Nuestra Institución en Acción
+                    </h2>
+                    <p>
+                        Descubre cómo padres,madres docentes y personal administrativo trabajan juntos para brindar una educación de calidad y formar líderes del mañana.
+                    </p>
+                    <a href="https://web.facebook.com/reel/1212769843964689"
+                    target="_blank"
+                    class="btn btn-light btn-lg rounded-pill px-4">
+
+                        <i class="bi bi-play-fill me-2"></i>
+                        Ver Video Completo
+                    </a>
+                </div>
+
+                <div class="col-lg-6">
+                    <a href="https://web.facebook.com/reel/1212769843964689"
+                    target="_blank"
+                    class="video-preview">
+                        <img loading="lazy"
+                        src="{% static 'inventario/preview-video.png' %}">
+                        <div class="video-overlay">
+                            <div class="play-btn">
+                                <i class="bi bi-play-fill"></i>
+
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const ctx = document.getElementById('inventoryChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Disponible', 'Asignado', 'Reparación'],
-            datasets: [{
-                data: [{{ disponible }}, {{ en_uso }}, {{ mantenimiento }}],
-                backgroundColor: ['#198754', '#0d6efd', '#ffc107'],
-                borderWidth: 0
-            }]
-        },
-        options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
-    });
-</script>
-
-<style>
-    .bg-primary-subtle { background-color: #cfe2ff !important; }
-    .bg-success-subtle { background-color: #d1e7dd !important; }
-    .bg-warning-subtle { background-color: #fff3cd !important; }
-    .bg-info-subtle { background-color: #cff4fc !important; }
-</style>
 {% endblock %}

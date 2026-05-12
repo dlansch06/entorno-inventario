@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    :root {
+        --assist-green: #10b981;
+        --assist-orange: #f59e0b;
+        --assist-red: #ef4444;
+        --assist-blue: #3b82f6;
+        --bg-panel: #f8fafc;
+    }
+    body { background-color: var(--bg-panel); }
+    .card-stat {
+        border: none;
+        border-radius: 16px;
+        transition: transform 0.3s ease;
+        background: white;
+        border-left: 5px solid transparent;
+    }
+    .card-stat:hover { transform: translateY(-5px); }
+    .stat-assist { border-left-color: var(--assist-green); }
+    .stat-tardy { border-left-color: var(--assist-orange); }
+    .stat-absent { border-left-color: var(--assist-red); }
+    .stat-percent { border-left-color: var(--assist-blue); }
+    
+    .icon-box {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .badge-presente { background-color: #dcfce7; color: #15803d; border-radius: 20px; padding: 4px 12px; font-weight: 600; }
+    .badge-tardanza { background-color: #fef3c7; color: #b45309; border-radius: 20px; padding: 4px 12px; font-weight: 600; }
+    .badge-falta { background-color: #fee2e2; color: #b91c1c; border-radius: 20px; padding: 4px 12px; font-weight: 600; }
+    
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+</style>
+
+<div class="container py-5">
+    <!-- FORMULARIO DE ACCESO (Imagen {C73DBDF3-3AEB-4E0C-948D-1C442CB04363}.png) -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-lg p-4 rounded-4">
+                <div class="text-center mb-4">
+                    <div class="bg-primary bg-opacity-10 d-inline-block p-3 rounded-circle mb-3">
+                        <i class="bi bi-person-badge text-primary fs-2"></i>
+                    </div>
+                    <h2 class="fw-bold">Acceder al Sistema</h2>
+                    <p class="text-muted">Ingresa tus datos de acceso para consultar la asistencia</p>
+                </div>
+                
+                <form method="POST" action="{% if es_invitado %}{% url 'registro_padre' %}{% endif %}">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Número de DNI o Código Personal</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-fingerprint"></i></span>
+                            <input type="text" class="form-control border-start-0 bg-light" placeholder="Ingresa tu DNI o código personal">
+                        </div>
+                        <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Si no tienes tu código, contacta con dirección.</small>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nombre del Estudiante <span class="text-muted small">(opcional)</span></label>
+                            <input type="text" class="form-control bg-light" placeholder="Nombre completo">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Grado / Año <span class="text-muted small">(opcional)</span></label>
+                            <select class="form-select bg-light">
+                                <option>3° Primaria</option>
+                                <option>4° Primaria</option>
+                                <option>5° Secundaria</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow-sm">
+                        <i class="bi bi-search me-2"></i> Consultar Asistencia
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD DE ESTADÍSTICAS (Imagen {496F3145-3962-4347-AEED-BCA7152D1259}.png) -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card card-stat stat-assist shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted fw-bold text-uppercase">Asistencias</small>
+                        <h2 class="fw-bold mb-0 text-success">142</h2>
+                        <small class="text-muted">días presente</small>
+                    </div>
+                    <div class="icon-box bg-success bg-opacity-10 text-success">
+                        <i class="bi bi-check-lg fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat stat-tardy shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted fw-bold text-uppercase">Tardanzas</small>
+                        <h2 class="fw-bold mb-0 text-warning">5</h2>
+                        <small class="text-muted">días con tardanza</small>
+                    </div>
+                    <div class="icon-box bg-warning bg-opacity-10 text-warning">
+                        <i class="bi bi-clock-history fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat stat-absent shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted fw-bold text-uppercase">Faltas</small>
+                        <h2 class="fw-bold mb-0 text-danger">3</h2>
+                        <small class="text-muted">días ausente</small>
+                    </div>
+                    <div class="icon-box bg-danger bg-opacity-10 text-danger">
+                        <i class="bi bi-x-lg fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat stat-percent shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted fw-bold text-uppercase">Asistencia</small>
+                        <h2 class="fw-bold mb-0 text-primary">96.6%</h2>
+                        <small class="text-muted">promedio general</small>
+                    </div>
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary">
+                        <i class="bi bi-percent fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+        <div class="card-header bg-white py-3 border-0">
+            <h5 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i> Registro de Asistencia - Noviembre 2025</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Fecha</th>
+                        <th>Día</th>
+                        <th>Estado</th>
+                        <th>Observación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ejemplo de datos falsos -->
+                    <tr>
+                        <td class="ps-4">25/11/2025</td>
+                        <td>Martes</td>
+                        <td><span class="badge-presente">Presente</span></td>
+                        <td class="text-muted">-</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">21/11/2025</td>
+                        <td>Viernes</td>
+                        <td><span class="badge-tardanza">Tardanza</span></td>
+                        <td class="text-muted small">Llegó 15 minutos tarde</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">19/11/2025</td>
+                        <td>Miércoles</td>
+                        <td><span class="badge-falta">Falta</span></td>
+                        <td class="text-muted small">Justificada - cita médica</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Información Importante</h2>
+        <div style="width: 60px; height: 4px; background: orange; margin: 0 auto;"></div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card info-card p-4 border-start border-blue border-4">
+                <div class="bg-blue-100 icon-box mb-3" style="background:#e0f2fe; color:#0369a1;">
+                    <i class="bi bi-clock-fill"></i>
+                </div>
+                <h5 class="fw-bold">Horario de Ingreso</h5>
+                <p class="text-muted small">El horario de ingreso es de 07:30 a.m. a 07:50 a.m. Las estudiantes que ingresen después serán registradas como tardanza.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card info-card p-4 border-start border-orange border-4" style="border-left-color:orange !important;">
+                <div class="bg-orange-100 icon-box mb-3" style="background:#ffedd5; color:#9a3412;">
+                    <i class="bi bi-file-earmark-plus-fill"></i>
+                </div>
+                <h5 class="fw-bold">Justificaciones</h5>
+                <p class="text-muted small">Las justificaciones deben presentarse dentro de los 3 días hábiles siguientes a la falta con el documento correspondiente.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card info-card p-4 border-start border-green border-4" style="border-left-color:green !important;">
+                <div class="bg-green-100 icon-box mb-3" style="background:#dcfce7; color:#166534;">
+                    <i class="bi bi-percent"></i>
+                </div>
+                <h5 class="fw-bold">Asistencia Mínima</h5>
+                <p class="text-muted small">Se requiere un mínimo del 70% de asistencia para aprobar el año. Las faltas injustificadas afectan directamente esta nota.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,11 +1,14 @@
 import io
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.db.models import Q
 from django.http import HttpResponse
-from .models import Equipo
 from django.contrib import messages
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from .models import Equipo, Estudiante, Actividad, Comunicado, Asistencia, Nota, Perfil
+
 # Librerías para PDF y Excel
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
@@ -20,6 +23,9 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect('/admin/') if request.user.is_staff else redirect('dashboard')
     
+    if request.session.get('es_invitado'):
+        request.session.flush()
+
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -29,9 +35,7 @@ def login_view(request):
                 return redirect('/admin/')
             return redirect('dashboard')
         else:
-            # Esto avisa si los datos están mal
-            messages.error(request, "Usuario o contraseña incorrectos.")
-            
+            messages.error(request, "Usuario o contraseña incorrectos.")     
     return render(request, 'login.html')
 
 def invitado_view(request):
@@ -45,26 +49,31 @@ def logout_view(request):
     request.session.flush() 
     return redirect('login')
 
+def registro_padre_view(request):
+    """Permite a un padre crear su cuenta. Quedará en 'Pendiente' hasta que el Director apruebe."""
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Creamos el perfil automáticamente (el modelo Perfil tiene rol='PADRE' por defecto)
+            Perfil.objects.create(user=user)
+            messages.success(request, "Cuenta creada. Espera la aprobación del Director para ver notas.")
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'padres/registro_padre.html', {'form': form})
 
 # --- 2. DASHBOARD (PANEL DE CONTROL) ---
 
 def dashboard_view(request):
     """Muestra el resumen estadístico con las tarjetas de colores."""
+
     if not request.user.is_authenticated and not request.session.get('es_invitado'):
         return redirect('login')
-    
-    context = {
-        'total': Equipo.objects.count(),
-        'disponible': Equipo.objects.filter(estado='DISPONIBLE').count(),
-        'en_uso': Equipo.objects.filter(estado='EN_USO').count(),
-        'mantenimiento': Equipo.objects.filter(estado='MANTENIMIENTO').count(),
-        'no_existe': Equipo.objects.filter(estado='NO_EXISTE').count(),
-        'equipos_recientes': Equipo.objects.all().order_by('-id')[:5],
-    }
-    return render(request, 'dashboard.html', context)
+
+    return render(request, 'dashboard.html')
 
 
-# --- 3. EQUIPOS Y REPORTES ---
 def inventario_view(request):
     """Muestra la tabla de equipos con filtros de búsqueda."""
     if not request.user.is_authenticated and not request.session.get('es_invitado'):
@@ -86,7 +95,7 @@ def inventario_view(request):
     return render(request, 'inventario.html', {
         'equipos': equipos, 
         'q': q, 
-        'estado_actual': estado
+        'estado_actual': estado,
     })
 
 def reportes_view(request):
@@ -123,26 +132,55 @@ def reportes_view(request):
 def acerca_de_view(request):
     if not request.user.is_authenticated and not request.session.get('es_invitado'):
         return redirect('login')
-    
-    
     return render(request, 'info.html')
     
+@login_required
+def mover_a_papelera(request, pk):
+    if not request.user.is_staff:
+        messages.error(request, "No tienes permiso para eliminar equipos.")
+        return redirect('inventario')
     
-    return render(request, 'info.html')
+    equipo = get_object_or_404(Equipo, pk=pk)
+    equipo.eliminado = True
+    equipo.fecha_eliminacion = datetime.now()
+    equipo.save()
+    messages.success(request, f"Equipo '{equipo.serie}' movido a papelera.")
+    return redirect('inventario')
+
+@login_required
+def ver_papelera(request):
+    if not request.user.is_staff:
+        return redirect('inventario')  
+    equipos_eliminados = Equipo.objects.filter(eliminado=True)
+    return render(request, 'papelera.html', {'equipos': equipos_eliminados})
+
+@login_required
+def restaurar_equipo(request, pk):
+    if not request.user.is_staff:
+        return redirect('inventario')
+    equipo = get_object_or_404(Equipo, pk=pk)
+    equipo.eliminado = False
+    equipo.save()
+    return redirect('ver_papelera')
+
+@login_required
+def eliminar_permanente(request, pk):
+    if not request.user.is_staff:
+        return redirect('dashboard')
+    equipo = get_object_or_404(Equipo, pk=pk)  
+    equipo.delete() 
+    return redirect('ver_papelera') 
 def exportar_excel(queryset):
     wb = Workbook()
     ws = wb.active
     ws.title = "Inventario Juana Cervantes"
 
-    # --- DISEÑO DE ESTILOS ---
     header_fill = PatternFill(start_color="003366", end_color="003366", fill_type="solid")
     header_font = Font(color="FFFFFF", bold=True, size=12)
     border_style = Border(left=Side(style='thin'), right=Side(style='thin'), 
                          top=Side(style='thin'), bottom=Side(style='thin'))
     center_align = Alignment(horizontal="center", vertical="center")
 
-    # --- ENCABEZADO PERSONALIZADO (Logo y Título) ---
-    # Dejamos las primeras filas para el logo y título
     ws.merge_cells('B2:F2')
     ws['B2'] = "I.E. JUANA CERVANTES DE BOLOGNESI"
     ws['B2'].font = Font(bold=True, size=16, color="003366")
@@ -153,20 +191,16 @@ def exportar_excel(queryset):
     ws['B3'].font = Font(italic=True, size=10)
     ws['B3'].alignment = center_align
 
-    # Cargar Logo (Asegúrate de que la ruta sea correcta en tu proyecto)
     try:
         img = ExcelImage('static/inventario/logo.jpg') 
         img.width = 60 # Ajustar tamaño
         img.height = 60
         ws.add_image(img, 'A1')
     except:
-        pass # Si no encuentra la imagen, el reporte se genera igual
-
-    # --- TABLA DE DATOS ---
+        pass 
     headers = ['SERIE', 'MARCA', 'MODELO', 'ESTADO', 'UBICACIÓN', 'RESPONSABLE']
     start_row = 5 # La tabla empieza en la fila 5
     
-    # Escribir encabezados de tabla
     for col_num, header in enumerate(headers, 1):
         cell = ws.cell(row=start_row, column=col_num)
         cell.value = header
@@ -191,7 +225,6 @@ def exportar_excel(queryset):
             cell.border = border_style
             cell.alignment = Alignment(vertical="center", horizontal="left")
 
-    # --- AJUSTE AUTOMÁTICO DE COLUMNAS ---
     for col in ws.columns:
         max_length = 0
         column = col[0].column_letter
@@ -201,7 +234,6 @@ def exportar_excel(queryset):
             except: pass
         ws.column_dimensions[column].width = max_length + 4
 
-    # --- RESPUESTA HTTP ---
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=Reporte_Inventario_JC.xlsx'
     wb.save(response)
@@ -249,3 +281,44 @@ def exportar_pdf(queryset):
     p.save()
     buffer.seek(0)
     return HttpResponse(buffer, content_type='application/pdf')
+
+
+def actividades_view(request):
+    if not request.user.is_authenticated and not request.session.get('es_invitado'):
+        return redirect('login')
+    actividades = Actividad.objects.all().order_by('fecha_actividad')
+    return render(request, 'academico/actividades.html', {'actividades': actividades})
+
+def comunicados_view(request):
+    if not request.user.is_authenticated and not request.session.get('es_invitado'):
+        return redirect('login')
+    comunicados = Comunicado.objects.all().order_by('-fecha_publicacion')
+    return render(request, 'academico/comunicados.html', {'comunicados': comunicados})
+
+def asistencias_view(request):
+    es_invitado = not request.user.is_authenticated
+    asistencias = Asistencia.objects.all().order_by('-fecha')
+    return render(request, 'academico/asistencias.html', {
+        'asistencias': asistencias,
+        'es_invitado': es_invitado  # <--- CRUCIAL: Pasamos la variable al HTML
+    })
+
+def notas_view(request):
+    es_invitado = not request.user.is_authenticated
+    notas = Nota.objects.all().order_by('estudiante__apellidos')
+    
+    return render(request, 'academico/notas.html', {
+        'notas': notas,
+        'es_invitado': es_invitado  # <--- CRUCIAL: Pasamos la variable al HTML
+    }) 
+
+def registro_padre_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            Perfil.objects.create(user=user)
+            messages.success(request, "Cuenta creada. Espera la aprobación del Director para ver notas.")
+            return redirect('dashboard')
+
+    return render(request, 'padres/registro_padre.html')

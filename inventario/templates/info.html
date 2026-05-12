@@ -3,121 +3,246 @@
 
 {% block content %}
 <style>
-    /* Mejora de interactividad para las tarjetas de contacto */
+    /* VARIABLES DE COLOR INSTITUCIONAL */
+    :root {
+        --azul-profundo: #000d1a;
+        --azul-institucional: #001a33;
+        --neon-cyan: #00f2ff;
+        --blanco-suave: #f8fafc;
+    }
+
+    /* FONDO GENERAL DEL SITIO */
+    body {
+        background-color: #f1f5f9;
+    }
+
+    /* ESTILO TECNOLÓGICO PARA VALORES */
+    .section-valores {
+        background: radial-gradient(circle at center, var(--azul-institucional) 0%, var(--azul-profundo) 100%);
+        padding: 100px 0;
+        border-radius: 50px; /* Curva para separar de lo blanco */
+        margin: 40px 15px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    /* LA FORMA "WAO" MEJORADA (Hexágono Estilizado) */
+    .card-tech {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 242, 255, 0.1);
+        /* Forma de panel de datos futurista */
+        clip-path: polygon(0% 15%, 15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%);
+        padding: 50px 30px;
+        text-align: center;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        position: relative;
+    }
+
+    .card-tech:hover {
+        transform: translateY(-15px);
+        background: rgba(0, 242, 255, 0.05);
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+    }
+
+    /* ICONOS CON EFECTO DE GLOW */
+    .icon-wrap {
+        font-size: 3.8rem;
+        margin-bottom: 25px;
+        display: inline-block;
+        transition: all 0.5s ease;
+    }
+
+    .card-tech:hover .icon-wrap {
+        filter: drop-shadow(0 0 15px currentColor);
+        transform: scale(1.1);
+    }
+
+    /* COLORES SEGÚN IMAGEN REFERENCIAL */
+    .val-solidaridad { color: #4d79ff; }
+    .val-responsabilidad { color: #ffcc00; }
+    .val-innovacion { color: #00f2ff; }
+    .val-respeto { color: #ff4d4d; }
+    .val-excelencia { color: #a855f7; }
+    .val-comunidad { color: #22c55e; }
+
+    .card-tech h4 {
+        color: white;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-size: 1.2rem;
+    }
+
+    .card-tech p {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+
+    /* TARJETAS DE CONTACTO (Efecto Glass) */
     .contact-card {
-        transition: transform 0.2s ease, shadow 0.2s ease;
-        cursor: default;
+        transition: all 0.3s ease;
+        border: none !important;
+        background: white;
     }
     .contact-card:hover {
-        transform: translateX(5px);
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        transform: scale(1.03);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
     }
-    /* Asegura que el mapa ocupe todo el espacio disponible */
-    .map-container {
-        min-height: 450px;
-        height: 100%;
+
+    /* DECORACIÓN DE TÍTULOS */
+    .title-underline {
+        width: 80px;
+        height: 4px;
+        background: var(--azul-institucional);
+        margin: 10px auto;
+        border-radius: 2px;
     }
 </style>
 
 <div class="container-fluid p-4">
-    <!-- Encabezado con Breadcrumb mejorado -->
-    <div class="mb-4">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb small">
-                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Inicio</a></li>
-                <li class="breadcrumb-item active text-muted">Acerca del Colegio</li>
-            </ol>
-        </nav>
-        <h2 class="fw-bold text-dark">Información Institucional</h2>
-    </div>
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Inicio</a></li>
+            <li class="breadcrumb-item active text-muted">Portal Institucional</li>
+        </ol>
+    </nav>
 
-    <!-- Sección de Información Principal: Diseño Limpio -->
-    <div class="card border-0 rounded-4 shadow-sm overflow-hidden bg-white mb-5">
+    <div class="card border-0 rounded-5 shadow-lg overflow-hidden bg-white mb-5">
         <div class="row g-0 align-items-center">
-            <div class="col-lg-7 p-4 p-lg-5">
-                <span class="text-danger fw-bold small text-uppercase mb-2 d-block">Institución Educativa</span>
-                <h3 class="fw-bold mb-4 display-6">Colegio Nacional Juana Cervantes</h3>
-                <p class="text-muted fs-5">Emblemática institución educativa de Arequipa, comprometida con la excelencia en los niveles de primaria y secundaria.</p>
-                <a href="https://facebook.com/JuanaCervantesAQP" target="_blank" class="btn btn-primary rounded-pill px-4 py-2 mt-3 shadow-sm">
-                    <i class="bi bi-facebook me-2"></i> Visitar nuestra Comunidad
-                </a>
+            <div class="col-lg-7 p-5">
+                <h6 class="text-primary fw-bold text-uppercase mb-2 tracking-widest">Tradición y Tecnología</h6>
+                <h1 class="fw-bold mb-4 display-4 text-dark">Colegio Nacional <br><span style="color: var(--azul-institucional)">Juana Cervantes</span></h1>
+                <p class="text-muted fs-5 lh-base">Emblema de Arequipa. Lideramos la formación integral de la mujer cervantina, uniendo la disciplina histórica con la innovación digital del siglo XXI.</p>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="https://facebook.com/JuanaCervantesAQP" target="_blank" class="btn btn-dark rounded-pill px-4 py-2 shadow">
+                        <i class="bi bi-facebook me-2"></i> Comunidad
+                    </a>
+                    <button class="btn btn-outline-primary rounded-pill px-4 py-2">Nuestra Historia</button>
+                </div>
             </div>
-            <div class="col-lg-5">
-                <img src="{% static 'inventario/colegio.png' %}" class="img-fluid h-100 w-100" style="object-fit: cover; min-height: 350px;" alt="Fachada Colegio">
+            <div class="col-lg-5 position-relative">
+                <img src="{% static 'inventario/portada2.jpg' %}" class="img-fluid h-100 w-100" style="object-fit: cover; min-height: 450px;" alt="Fachada">
+                <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.7))">
+                    <p class="text-white small mb-0"><i class="bi bi-geo-alt me-2"></i>Arequipa, Perú</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Misión y Visión: Tarjetas equilibradas -->
     <div class="row g-4 mb-5">
         <div class="col-md-6">
-            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 border-top border-primary border-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-primary-subtle p-3 rounded-circle me-3"><i class="bi bi-bullseye text-primary fs-4"></i></div>
-                    <h4 class="fw-bold mb-0">Misión</h4>
-                </div>
-                <p class="text-muted">Formar jóvenes íntegros y responsables, proporcionando herramientas tecnológicas modernas y sólidos valores éticos para el futuro.</p>
+            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 border-start border-primary border-5">
+                <h4 class="fw-bold text-primary mb-3"><i class="bi bi-rocket-takeoff me-2"></i>Misión</h4>
+                <p class="text-muted">Formar ciudadanas líderes, con pensamiento crítico y ético, capaces de dominar herramientas tecnológicas para transformar su entorno y la sociedad.</p>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 border-top border-warning border-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-warning-subtle p-3 rounded-circle me-3"><i class="bi bi-eye text-warning fs-4"></i></div>
-                    <h4 class="fw-bold mb-0">Visión</h4>
-                </div>
-                <p class="text-muted">Ser reconocidos como una institución líder en innovación pedagógica y formación de líderes íntegros en la región sur del país.</p>
+            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 border-start border-info border-5">
+                <h4 class="fw-bold text-info mb-3"><i class="bi bi-eye me-2"></i>Visión</h4>
+                <p class="text-muted">Ser la institución educativa referente en el sur del Perú por su excelencia pedagógica y su vanguardia en la gestión digital de recursos.</p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- TRAYECTORIA INSTITUCIONAL: Enfoque de lectura[cite: 2] -->
-    <div class="row justify-content-center mb-5">
+<section class="section-valores">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-white fw-bold display-5">NÚCLEO DE VALORES</h2>
+            <div class="title-underline" style="background: var(--neon-cyan)"></div>
+            <p class="text-info mt-3 fw-light tracking-widest">CULTURA INSTITUCIONAL DIGITAL</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-tech val-solidaridad">
+                    <i class="fas fa-hand-holding-heart icon-wrap"></i>
+                    <h4>Solidaridad</h4>
+                    <p>Fomentamos el apoyo mutuo y la colaboración en nuestra red educativa.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-tech val-responsabilidad">
+                    <i class="fas fa-shield-check icon-wrap"></i>
+                    <h4>Responsabilidad</h4>
+                    <p>Compromiso ético con el deber y el uso de recursos tecnológicos.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-tech val-innovacion">
+                    <i class="fas fa-microchip icon-wrap"></i>
+                    <h4>Innovación</h4>
+                    <p>Dominio de nuevas tecnologías y pensamiento creativo disruptivo.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-tech val-respeto">
+                    <i class="fas fa-users-rays icon-wrap"></i>
+                    <h4>Respeto</h4>
+                    <p>Valoramos la diversidad y la dignidad en nuestra comunidad.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-tech val-excelencia">
+                    <i class="fas fa-gem icon-wrap"></i>
+                    <h4>Excelencia</h4>
+                    <p>Búsqueda constante de la calidad en cada proceso académico.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-tech val-comunidad">
+                    <i class="fas fa-network-wired icon-wrap"></i>
+                    <h4>Comunidad</h4>
+                    <p>Padres, docentes y alumnas conectados por un solo objetivo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card border-0 rounded-4 shadow-sm p-4 p-lg-5 bg-white shadow-lg">
+            <div class="card border-0 rounded-4 shadow-lg p-5 bg-white position-relative">
                 <div class="text-center mb-4">
-                    <span class="text-danger fw-bold small text-uppercase">Nuestra Historia</span>
                     <h3 class="fw-bold text-dark">Trayectoria e Identidad</h3>
+                    <div class="title-underline"></div>
                 </div>
                 <div class="text-muted lh-lg fs-6">
-                    <p>El Colegio Nacional Juana Cervantes tiene sus raíces en el compromiso histórico de Arequipa con la educación pública de calidad. A lo largo de los años, hemos evolucionado para adaptarnos a las necesidades de nuestra comunidad, manteniendo la excelencia y disciplina.</p>
-                    <p>En la actualidad, modernizamos nuestros procesos con este <strong>Sistema de Inventario</strong>, integrando la tecnología en la gestión educativa para beneficio de todos nuestros estudiantes.</p>
+                    <p>El Colegio Nacional <strong>Juana Cervantes</strong> es guardián de la historia arequipeña. Desde su fundación, ha sido el hogar de generaciones de mujeres que han marcado el rumbo de nuestra ciudad.</p>
+                    <p>Este <strong>Sistema de Gestión Institucional</strong> es el paso firme hacia el futuro, permitiendo que la administración de recursos sea tan impecable como nuestra historia.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- CONTACTO Y MAPA: Optimizado para interacción[cite: 1, 2] -->
-    <div class="row g-4 mt-2">
+    <div class="row g-5 mt-5">
         <div class="col-lg-5">
-            <span class="text-danger fw-bold small text-uppercase">Contacto</span>
-            <h3 class="fw-bold text-dark mb-4">Ponte en contacto</h3>
-            
+            <h3 class="fw-bold text-dark mb-4">Encuéntranos</h3>
             <div class="d-flex flex-column gap-3">
-                <!-- Tarjetas de contacto mejoradas -->
-                <div class="contact-card d-flex align-items-center p-3 bg-white rounded-4 shadow-sm border-start border-primary border-4">
-                    <div class="bg-primary-subtle p-3 rounded-3 me-3 text-primary"><i class="bi bi-geo-alt-fill"></i></div>
-                    <div><h6 class="fw-bold mb-0">Dirección</h6><small class="text-muted">Av. La marina, Arequipa, Perú</small></div>
+                <div class="contact-card d-flex align-items-center p-3 rounded-4 shadow-sm border-start border-primary border-5">
+                    <div class="bg-primary-subtle p-3 rounded-3 me-3 text-primary"><i class="bi bi-geo-alt-fill fs-4"></i></div>
+                    <div><h6 class="fw-bold mb-0">Dirección</h6><small class="text-muted">Malecón Vallecito s/n, Arequipa</small></div>
                 </div>
-
-                <div class="contact-card d-flex align-items-center p-3 bg-white rounded-4 shadow-sm border-start border-success border-4">
-                    <div class="bg-success-subtle p-3 rounded-3 me-3 text-success"><i class="bi bi-envelope-fill"></i></div>
+                <div class="contact-card d-flex align-items-center p-3 rounded-4 shadow-sm border-start border-success border-5">
+                    <div class="bg-success-subtle p-3 rounded-3 me-3 text-success"><i class="bi bi-envelope-at-fill fs-4"></i></div>
                     <div><h6 class="fw-bold mb-0">Correo</h6><small class="text-muted">juanacervantesbolognesi@gmail.com</small></div>
                 </div>
-
-                <div class="contact-card d-flex align-items-center p-3 bg-white rounded-4 shadow-sm border-start border-info border-4">
-                    <div class="bg-info-subtle p-3 rounded-3 me-3 text-info"><i class="bi bi-clock-fill"></i></div>
+                <div class="contact-card d-flex align-items-center p-3 rounded-4 shadow-sm border-start border-info border-5">
+                    <div class="bg-info-subtle p-3 rounded-3 me-3 text-info"><i class="bi bi-clock-history fs-4"></i></div>
                     <div><h6 class="fw-bold mb-0">Horario</h6><small class="text-muted">Lun - Vie: 7:00 AM - 5:00 PM</small></div>
                 </div>
             </div>
         </div>
 
-        <!-- Ubicación en Mapa: Lado derecho e Interactivo[cite: 2] -->
         <div class="col-lg-7">
-            <h3 class="fw-bold text-dark mb-4">Ubicación en Mapa</h3>
-            <div class="card border-0 rounded-4 shadow-sm overflow-hidden map-container">
+            <div class="card border-0 rounded-5 shadow-lg overflow-hidden" style="height: 400px;">
                 <iframe 
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3827.365319803126!2d-71.5286523!3d-16.4063236!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91424b13a3642307%3A0x6b42b93e430f06f5!2sColegio%20Nacional%20Juana%20Cervantes!5e0!3m2!1ses-419!2spe!4v1714500000000!5m2!1ses-419!2spe" 
-                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
                 </iframe>
             </div>
         </div>
