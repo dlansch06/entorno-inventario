@@ -9,7 +9,6 @@ from django.utils.html import format_html # Para poner colores
 from django.utils import timezone
 from .models import Perfil, Equipo, Designacion, Estudiante, Nota, Asistencia, Comunicado, Actividad
 
-# --- ACCIÓN: EXPORTAR A EXCEL PRO ---
 @admin.action(description='Descargar Reporte Excel (Oficial)')
 def exportar_excel_pro(modeladmin, request, queryset):
     wb = openpyxl.Workbook()
@@ -23,20 +22,18 @@ def exportar_excel_pro(modeladmin, request, queryset):
     border = Border(left=Side(style='thin'), right=Side(style='thin'), 
                     top=Side(style='thin'), bottom=Side(style='thin'))
 
-    # Logo
+    
     logo_path = os.path.join(settings.BASE_DIR, 'static/img/logo.jpg') # Asegura esta ruta
     if os.path.exists(logo_path):
         img = XLImage(logo_path)
         img.width, img.height = 80, 80
         ws.add_image(img, 'A1') 
 
-    # Título
     ws.merge_cells('B2:F2')
     ws['B2'] = "I.E. JUANA CERVANTES - REPORTE DE INVENTARIO"
     ws['B2'].font = Font(size=14, bold=True)
     ws['B2'].alignment = center_align
 
-    # Encabezados
     headers = ['SERIE', 'CATEGORÍA', 'MARCA', 'MODELO', 'ESTADO', 'INGRESO COLEGIO']
     for col_num, column_title in enumerate(headers, 1):
         cell = ws.cell(row=6, column=col_num, value=column_title)
@@ -45,7 +42,6 @@ def exportar_excel_pro(modeladmin, request, queryset):
         cell.alignment = center_align
         cell.border = border
 
-    # Datos
     for row_num, obj in enumerate(queryset, 7):
         data = [
             obj.serie, obj.get_categoria_display(), obj.marca, obj.modelo,
@@ -63,7 +59,6 @@ def exportar_excel_pro(modeladmin, request, queryset):
     wb.save(response)
     return response
 
-# --- CONFIGURACIÓN ADMIN: EQUIPOS ---
 @admin.register(Equipo)
 class EquipoAdmin(admin.ModelAdmin):
     list_display = ('serie', 'marca', 'modelo', 'color_estado', 'aula_actual', 'fecha_ingreso_colegio')
@@ -85,7 +80,7 @@ class EquipoAdmin(admin.ModelAdmin):
         )
     color_estado.short_description = 'Estado Actual'
 
-# --- CONFIGURACIÓN ADMIN: PERFILES (APROBACIÓN) ---
+
 @admin.action(description='Aprobar usuarios seleccionados')
 def aprobar_usuarios(modeladmin, request, queryset):
     queryset.update(esta_aprobado=True, fecha_aprobacion=timezone.now())
@@ -97,21 +92,96 @@ class PerfilAdmin(admin.ModelAdmin):
     list_editable = ('esta_aprobado',)
     actions = [aprobar_usuarios]
 
-# --- CONFIGURACIÓN ADMIN: ESTUDIANTES ---
 @admin.register(Estudiante)
 class EstudianteAdmin(admin.ModelAdmin):
     list_display = ('apellidos', 'nombres', 'dni', 'nivel', 'grado', 'seccion', 'padre')
     list_filter = ('nivel', 'grado', 'seccion')
     search_fields = ('dni', 'apellidos')
+    ordering = ('nivel', 'grado', 'seccion', 'apellidos')
 
-# --- CONFIGURACIÓN ADMIN: DESIGNACIONES ---
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or request.user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+            return qs
+        if request.user.perfil.rol == 'DOCENTE':
+            return qs.filter(nivel=request.user.perfil.nivel_asignado,
+                             grado=request.user.perfil.grado_asignado,
+                             seccion=request.user.perfil.seccion_asignada)
+        return qs.none()
+
 @admin.register(Designacion)
 class DesignacionAdmin(admin.ModelAdmin):
     list_display = ('equipo', 'persona_responsable', 'fecha_entrega', 'fecha_devolucion_real')
     list_filter = ('fecha_entrega', 'fecha_devolucion_real')
 
-# Registrar los restantes para gestión rápida
-admin.site.register(Nota)
-admin.site.register(Asistencia)
-admin.site.register(Comunicado)
-admin.site.register(Actividad)
+@admin.register(Nota)
+class NotaAdmin(admin.ModelAdmin):
+    list_display = ('estudiante', 'curso', 'b1', 'b2', 'b3', 'b4')
+    list_editable =('b1', 'b2', 'b3', 'b4')
+    list_filter = ('curso', 'estudiante__nivel', 'estudiante__grado', 'estudiante__seccion')
+    def get_queryset(self, request):
+        qs =super().get_queryset(request)
+        if request.user.is_superuser or request.user.perfil.rol == ['ADMIN', 'SECRETARIA']:
+            return qs
+        if request.user.perfil.rol == 'DOCENTE':
+            return qs.filter(estudiante__nivel=request.user.perfil.nivel_asignado,
+                             estudiante__grado=request.user.perfil.grado_asignado,
+                             estudiante__seccion=request.user.perfil.seccion_asignada)
+        return qs.none()
+
+@admin.register(Asistencia)
+class AsistenciaAdmin(admin.ModelAdmin):
+    list_display = ('estudiante', 'fecha', 'estado')
+    list_filter = ('fecha', 'estado', 'estudiante__grado')
+    list_editable = ('estado',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or request.user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+            return qs
+        if request.user.perfil.rol == 'DOCENTE':
+            return qs.filter(estudiante__nivel=request.user.perfil.nivel_asignado,
+                             estudiante__grado=request.user.perfil.grado_asignado,
+                             estudiante__seccion=request.user.perfil.seccion_asignada)
+        return qs.none()
+    
+@admin.register(Comunicado)
+class ComunicadoAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'autor', 'es_general', 'fecha_publicacion')
+    list_filter = ('es_general', 'fecha_publicacion')
+    search_fields = ('titulo', 'contenido')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+            return qs
+        if user.perfil.rol == 'DOCENTE':
+            return qs.filter(autor=user, es_general=False)
+        return qs.none()
+
+    def save_model(self, request, obj, form, change):
+        if request.user.perfil.rol == 'DOCENTE':
+            obj.es_general = False
+            obj.autor = request.user
+        elif not change and request.user.perfil.rol == 'DIRECTOR':
+            obj.autor = request.user
+        super().save_model(request, obj, form, change)
+
+    def has_change_permission(self, request, obj=None):
+        if obj and request.user.perfil.rol == 'SECRETARIA' and not obj.es_general:
+            return False
+        return super().has_change_permission(request, obj)
+    
+@admin.register(Actividad)
+class ActividadAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'tipo', 'fecha_actividad')
+    list_filter = ('tipo', 'fecha_actividad')
+    search_fields = ('titulo', 'descripcion')
+
+    def has_module_permission(self, request):
+        # Solo Director, Secretaria y Admin manejan Actividades
+        if request.user.is_superuser or request.user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+            return True
+        return False
+    

@@ -9,15 +9,13 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .models import Equipo, Estudiante, Actividad, Comunicado, Asistencia, Nota, Perfil
 
-# Librerías para PDF y Excel
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from openpyxl import Workbook
-from openpyxl.drawing.image import Image as ExcelImage # Para el logo
-from openpyxl.styles import Font, Alignment, PatternFill, Border, Side # Para el diseño
+from openpyxl.drawing.image import Image as ExcelImage 
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side 
 from datetime import datetime
-# --- 1. AUTENTICACIÓN Y ACCESO ---
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -39,7 +37,6 @@ def login_view(request):
     return render(request, 'login.html')
 
 def invitado_view(request):
-    """Crea una sesión temporal para invitados sin necesidad de contraseña."""
     request.session['es_invitado'] = True
     return redirect('dashboard')
 
@@ -62,8 +59,6 @@ def registro_padre_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'padres/registro_padre.html', {'form': form})
-
-# --- 2. DASHBOARD (PANEL DE CONTROL) ---
 
 def dashboard_view(request):
     """Muestra el resumen estadístico con las tarjetas de colores."""
@@ -116,7 +111,6 @@ def reportes_view(request):
     if estado:
         equipos = equipos.filter(estado=estado)
 
-    # Lógica de exportación
     export_type = request.GET.get('export')
     if export_type == 'excel':
         return exportar_excel(equipos)
@@ -209,7 +203,6 @@ def exportar_excel(queryset):
         cell.alignment = center_align
         cell.border = border_style
 
-    # Escribir datos del queryset
     for row_num, e in enumerate(queryset, start_row + 1):
         row_data = [
             e.serie, 
@@ -251,13 +244,11 @@ def exportar_pdf(queryset):
     p.setFillColor(colors.white)
     p.setFont("Helvetica-Bold", 16)
     p.drawString(50, h-45, "REPORTE DE INVENTARIO - I.E. JUANA CERVANTES")
-    
-    # Tabla de datos (columnas ajustadas para 4 campos)
+
     p.setFillColor(colors.black)
     p.setFont("Helvetica-Bold", 10)
     y = h - 120
     
-    # Ajustamos posiciones X para que se vea bien distribuido
     p.drawString(50, y, "Serie")
     p.drawString(180, y, "Modelo")
     p.drawString(380, y, "Estado")

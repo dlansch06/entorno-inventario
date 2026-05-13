@@ -92,7 +92,6 @@ class Estudiante(models.Model):
     grado = models.CharField(max_length=10)
     seccion = models.CharField(max_length=1)
     
-    # Padre opcional al inicio
     padre = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='hijas')
 
     def __str__(self):

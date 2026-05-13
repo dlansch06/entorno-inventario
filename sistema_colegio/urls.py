@@ -21,11 +21,9 @@ from django.urls import path
 from inventario import views 
 
 urlpatterns = [
-    # --- E ADMINISTRACIÓN Y ACCESO ---
     path('admin/', admin.site.urls),
     path('', views.login_view, name='login'),
     path('invitado/', views.invitado_view, name='invitado'),
-    
 
     
     path('dashboard/', views.dashboard_view, name='dashboard'),
@@ -36,7 +34,6 @@ urlpatterns = [
     path('reportes/', views.reportes_view, name='reportes'),
     path('equipos/', views.inventario_view, name='inventario'),
     path('acerca-del-colegio/', views.acerca_de_view, name='info'),
-    
     
     path('equipos/eliminar/<int:pk>/', views.mover_a_papelera, name='mover_a_papelera'),
     path('papelera/', views.ver_papelera, name='ver_papelera'),
