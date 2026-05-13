@@ -14,16 +14,12 @@ def exportar_excel_pro(modeladmin, request, queryset):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Inventario"
-
-    # Estilos
     header_font = Font(name='Arial', bold=True, color="FFFFFF")
     header_fill = PatternFill(start_color="4B2C20", end_color="4B2C20", fill_type="solid")
     center_align = Alignment(horizontal="center", vertical="center")
     border = Border(left=Side(style='thin'), right=Side(style='thin'), 
                     top=Side(style='thin'), bottom=Side(style='thin'))
-
-    
-    logo_path = os.path.join(settings.BASE_DIR, 'static/img/logo.jpg') # Asegura esta ruta
+    logo_path = os.path.join(settings.BASE_DIR, 'static/img/logo.jpg') 
     if os.path.exists(logo_path):
         img = XLImage(logo_path)
         img.width, img.height = 80, 80
@@ -90,7 +86,6 @@ class PerfilAdmin(admin.ModelAdmin):
     list_display = ('user', 'rol', 'esta_aprobado', 'grado_asignado', 'seccion_asignada')
     list_filter = ('rol', 'esta_aprobado', 'grado_asignado')
     list_editable = ('esta_aprobado',)
-    actions = [aprobar_usuarios]
 
 @admin.register(Estudiante)
 class EstudianteAdmin(admin.ModelAdmin):
@@ -101,12 +96,22 @@ class EstudianteAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if request.user.is_superuser or request.user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+        if request.user.is_superuser:
             return qs
-        if request.user.perfil.rol == 'DOCENTE':
-            return qs.filter(nivel=request.user.perfil.nivel_asignado,
-                             grado=request.user.perfil.grado_asignado,
-                             seccion=request.user.perfil.seccion_asignada)
+        
+        if not hasattr(request.user, 'perfil'):
+            return qs.none()
+
+        perfil = request.user.perfil
+        if perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+            return qs
+        
+        if perfil.rol == 'DOCENTE':
+            return qs.filter(
+                nivel=perfil.nivel_asignado,
+                grado=perfil.grado_asignado,
+                seccion=perfil.seccion_asignada
+            )
         return qs.none()
 
 @admin.register(Designacion)
@@ -117,16 +122,27 @@ class DesignacionAdmin(admin.ModelAdmin):
 @admin.register(Nota)
 class NotaAdmin(admin.ModelAdmin):
     list_display = ('estudiante', 'curso', 'b1', 'b2', 'b3', 'b4')
-    list_editable =('b1', 'b2', 'b3', 'b4')
+    list_editable = ('b1', 'b2', 'b3', 'b4')
     list_filter = ('curso', 'estudiante__nivel', 'estudiante__grado', 'estudiante__seccion')
+
     def get_queryset(self, request):
-        qs =super().get_queryset(request)
-        if request.user.is_superuser or request.user.perfil.rol == ['ADMIN', 'SECRETARIA']:
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
             return qs
-        if request.user.perfil.rol == 'DOCENTE':
-            return qs.filter(estudiante__nivel=request.user.perfil.nivel_asignado,
-                             estudiante__grado=request.user.perfil.grado_asignado,
-                             estudiante__seccion=request.user.perfil.seccion_asignada)
+            
+        if not hasattr(request.user, 'perfil'):
+            return qs.none()
+
+        perfil = request.user.perfil
+        if perfil.rol in ['ADMIN', 'SECRETARIA', 'DIRECTOR']:
+            return qs
+            
+        if perfil.rol == 'DOCENTE':
+            return qs.filter(
+                estudiante__nivel=perfil.nivel_asignado,
+                estudiante__grado=perfil.grado_asignado,
+                estudiante__seccion=perfil.seccion_asignada
+            )
         return qs.none()
 
 @admin.register(Asistencia)
@@ -137,12 +153,21 @@ class AsistenciaAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if request.user.is_superuser or request.user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+        if request.user.is_superuser:
             return qs
-        if request.user.perfil.rol == 'DOCENTE':
-            return qs.filter(estudiante__nivel=request.user.perfil.nivel_asignado,
-                             estudiante__grado=request.user.perfil.grado_asignado,
-                             estudiante__seccion=request.user.perfil.seccion_asignada)
+            
+        if not hasattr(request.user, 'perfil'):
+            return qs.none()
+
+        perfil = request.user.perfil
+        if perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+            return qs
+        if perfil.rol == 'DOCENTE':
+            return qs.filter(
+                estudiante__nivel=perfil.nivel_asignado,
+                estudiante__grado=perfil.grado_asignado,
+                estudiante__seccion=perfil.seccion_asignada
+            )
         return qs.none()
     
 @admin.register(Comunicado)
@@ -153,25 +178,33 @@ class ComunicadoAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        user = request.user
-        if user.is_superuser or user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+        if request.user.is_superuser:
             return qs
-        if user.perfil.rol == 'DOCENTE':
-            return qs.filter(autor=user, es_general=False)
+            
+        if not hasattr(request.user, 'perfil'):
+            return qs.none()
+
+        perfil = request.user.perfil
+        if perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
+            return qs
+        if perfil.rol == 'DOCENTE':
+            # Un docente solo ve sus propios comunicados no generales
+            return qs.filter(autor=request.user, es_general=False)
         return qs.none()
 
     def save_model(self, request, obj, form, change):
+        # Aseguramos que el autor sea siempre quien crea el comunicado
+        if not hasattr(request.user, 'perfil'):
+            super().save_model(request, obj, form, change)
+            return
+
         if request.user.perfil.rol == 'DOCENTE':
             obj.es_general = False
             obj.autor = request.user
-        elif not change and request.user.perfil.rol == 'DIRECTOR':
+        elif not change: # Solo al crear
             obj.autor = request.user
         super().save_model(request, obj, form, change)
 
-    def has_change_permission(self, request, obj=None):
-        if obj and request.user.perfil.rol == 'SECRETARIA' and not obj.es_general:
-            return False
-        return super().has_change_permission(request, obj)
     
 @admin.register(Actividad)
 class ActividadAdmin(admin.ModelAdmin):
@@ -180,7 +213,6 @@ class ActividadAdmin(admin.ModelAdmin):
     search_fields = ('titulo', 'descripcion')
 
     def has_module_permission(self, request):
-        # Solo Director, Secretaria y Admin manejan Actividades
         if request.user.is_superuser or request.user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
             return True
         return False

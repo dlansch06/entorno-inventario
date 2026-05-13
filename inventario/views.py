@@ -312,4 +312,4 @@ def registro_padre_view(request):
             messages.success(request, "Cuenta creada. Espera la aprobación del Director para ver notas.")
             return redirect('dashboard')
 
-    return render(request, 'padres/registro_padre.html')
+    return render(request, 'padres/registro_padre.html', {'form': form})
