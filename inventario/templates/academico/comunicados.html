@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #1e3a8a; 
+        --accent: #fbbf24;
+        --tag-gral: #f3f4f6; --text-gral: #4b5563; /* Gris claro para Generales */
+        --tag-aula: #fef3c7; --text-aula: #92400e; /* Amarillo para Salón */
+        --tag-alert: #fee2e2; --text-alert: #991b1b;
+    }
+
+    body { background-color: #f8fafc; font-family: 'Urbanist', sans-serif; }
+
+    /* Contenedor Principal con Marca de Agua */
+    .main-comunicados {
+        position: relative; 
+        min-height: 100vh;
+        padding-bottom: 80px;
+    }
+
+    .main-comunicados::before {
+        content: ""; 
+        position: fixed; 
+        top: 55%; left: 50%; 
+        transform: translate(-50%, -50%);
+        background-image: url('/static/inventario/logo.jpg'); 
+        background-repeat: no-repeat; 
+        background-position: center; 
+        background-size: 500px;
+        opacity: 0.04; 
+        z-index: -1; 
+        pointer-events: none;
+    }
+
+    .header-banner {
+        background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+        padding: 50px 0; 
+        color: white; 
+        border-bottom: 5px solid var(--accent);
+        margin-bottom: 40px;
+    }
+
+    /* Estilos para los Filtros (Pills) */
+    .filters-container {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+
+    .btn-filter {
+        background-color: #f1f5f9;
+        color: #475569;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-filter:hover { background-color: #e2e8f0; }
+    
+    .btn-filter.active {
+        background-color: var(--primary);
+        color: white;
+        box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2);
+    }
+
+    /* Estilos de Tarjeta (Ajustados a Imagen 2) */
+    .comm-card {
+        background: white; 
+        border-radius: 12px; 
+        border: 1px solid #e2e8f0;
+        transition: 0.4s;
+        /* Todas las tarjetas llevan borde izquierdo azul grueso en tu ejemplo */
+        border-left: 6px solid var(--primary); 
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .comm-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+
+    .badge-type { 
+        padding: 5px 12px; 
+        border-radius: 20px; 
+        font-weight: 700; 
+        font-size: 0.75rem; 
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .bg-gral { background: var(--tag-gral); color: var(--text-gral); }
+    .bg-aula { background: var(--tag-aula); color: var(--text-aula); }
+    .bg-alert { background: var(--tag-alert); color: var(--text-alert); }
+
+    .btn-leer { color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; transition: 0.2s; }
+    .btn-leer:hover { color: #1e40af; text-decoration: underline; }
+</style>
+
+<div class="main-comunicados">
+    <div class="header-banner">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="#" class="text-white opacity-75 text-decoration-none">Inicio</a></li>
+                    <li class="breadcrumb-item active text-white">Comunicados</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Comunicados</h1>
+            <p class="opacity-75 lead">Información importante para la comunidad Juana Cervantes.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="filters-container">
+            <button class="btn-filter active" data-filter="TODOS">Todos</button>
+            <button class="btn-filter" data-filter="GENERAL">Generales</button>
+            
+            {% if user.is_authenticated %}
+                <button class="btn-filter" data-filter="AULA">Por Salón</button>
+            {% endif %}
+            
+            </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white border">
+                    <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="busc" class="form-control border-0 py-2" placeholder="Buscar por título o contenido...">
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="lista-com">
+            {% for c in comunicados %}
+            <div class="col-md-6 card-item" data-tipo="{{ c.tipo }}">
+                <div class="card comm-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge-type 
+                            {% if c.tipo == 'GENERAL' %}bg-gral
+                            {% elif c.tipo == 'AULA' %}bg-aula
+                            {% else %}bg-alert{% endif %}">
+                            <i class="bi 
+                                {% if c.tipo == 'GENERAL' %}bi-megaphone
+                                {% elif c.tipo == 'AULA' %}bi-door-closed-fill text-warning
+                                {% else %}bi-exclamation-triangle{% endif %}"></i>
+                            {{ c.get_tipo_display }}
+                        </span>
+                        <small class="text-muted fw-bold">{{ c.fecha_publicacion|date:"d/m/Y" }}</small>
+                    </div>
+
+                    <h4 class="fw-bold text-dark mb-3">{{ c.titulo }}</h4>
+                    <p class="text-secondary small mb-4" style="line-height: 1.6;">
+                        {{ c.contenido|truncatechars:140 }}
+                    </p>
+
+                    <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">
+                            <i class="bi bi-person-fill"></i> {{ c.autor.get_full_name|default:c.autor.username }}
+                        </span>
+                        <a class="btn-leer" onclick="abrirModal('{{ c.titulo }}', '{{ c.contenido|escapejs }}', '{{ c.tipo }}')">Leer más →</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <h3 class="text-muted opacity-50">No hay comunicados disponibles por ahora.</h3>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalLectura" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 overflow-hidden">
+            <div id="m-header" class="p-3 text-center text-white">
+                <i class="bi bi-info-circle fs-2"></i>
+            </div>
+            <div class="modal-body p-4">
+                <h3 id="m-titulo" class="fw-bold text-center mb-4"></h3>
+                <div class="bg-light p-3 rounded-4 mb-3">
+                    <p id="m-contenido" class="mb-0" style="white-space: pre-line; line-height: 1.8;"></p>
+                </div>
+                <button class="btn btn-dark w-100 rounded-pill py-2 fw-bold" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Buscador por texto
+    document.getElementById('busc').addEventListener('keyup', function(e){
+        let search = e.target.value.toLowerCase();
+        filtrarTarjetas(); // Llama a la función principal para mantener consistencia con los botones
+    });
+
+    // Lógica para los botones de filtrado (Pills)
+    const filterBtns = document.querySelectorAll('.btn-filter');
+    let currentFilter = 'TODOS';
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Quitar clase activa de todos y agregarla al clickeado
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            currentFilter = this.getAttribute('data-filter');
+            filtrarTarjetas();
+        });
+    });
+
+    // Función unificada que filtra por Pestaña Y por Buscador de texto
+    function filtrarTarjetas() {
+        let searchText = document.getElementById('busc').value.toLowerCase();
+        
+        document.querySelectorAll('.card-item').forEach(card => {
+            let matchesText = card.innerText.toLowerCase().includes(searchText);
+            let matchesFilter = (currentFilter === 'TODOS' || card.getAttribute('data-tipo') === currentFilter);
+            
+            if (matchesText && matchesFilter) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    // Modal
+    function abrirModal(titulo, contenido, tipo) {
+        document.getElementById('m-titulo').innerText = titulo;
+        document.getElementById('m-contenido').innerText = contenido;
+        
+        const header = document.getElementById('m-header');
+        if(tipo === 'GENERAL') header.style.backgroundColor = '#1e3a8a';
+        else if(tipo === 'AULA') header.style.backgroundColor = '#fbbf24';
+        else header.style.backgroundColor = '#ef4444';
+
+        new bootstrap.Modal(document.getElementById('modalLectura')).show();
+    }
+</script>
+{% endblock %}

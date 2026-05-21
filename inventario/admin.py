@@ -1,13 +1,20 @@
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from openpyxl.drawing.image import Image as XLImage
+import io
+import json
 import os
+import openpyxl
+from openpyxl.drawing.image import Image as XLImage
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+
 from django.conf import settings
-from django.http import HttpResponse
 from django.contrib import admin
-from django.utils.html import format_html # Para poner colores
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.models import User
+from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
-from .models import Perfil, Equipo, Designacion, Estudiante, Nota, Asistencia, Comunicado, Actividad
+from django.utils.html import format_html  
+
+from .models import Actividad,Asistencia,Comunicado,Designacion,Equipo,Estudiante,Nota,Perfil
+
 
 @admin.action(description='Descargar Reporte Excel (Oficial)')
 def exportar_excel_pro(modeladmin, request, queryset):
@@ -76,16 +83,49 @@ class EquipoAdmin(admin.ModelAdmin):
         )
     color_estado.short_description = 'Estado Actual'
 
-
 @admin.action(description='Aprobar usuarios seleccionados')
 def aprobar_usuarios(modeladmin, request, queryset):
     queryset.update(esta_aprobado=True, fecha_aprobacion=timezone.now())
 
 @admin.register(Perfil)
 class PerfilAdmin(admin.ModelAdmin):
-    list_display = ('user', 'rol', 'esta_aprobado', 'grado_asignado', 'seccion_asignada')
+    list_display = ('user', 'rol', 'esta_aprobado', 'grado_asignado', 'seccion_asignada', 'verificacion_sistema')
     list_filter = ('rol', 'esta_aprobado', 'grado_asignado')
     list_editable = ('esta_aprobado',)
+
+    def verificacion_sistema(self, obj):
+        if obj.rol != 'PADRE':
+            return "-"
+        if not obj.dni_hija:
+            return format_html('<span style="color: red; font-weight: bold;">{}</span>', "Sin datos")
+        
+        estudiante_existe = Estudiante.objects.filter(dni=obj.dni_hija).exists()
+        if estudiante_existe:
+            return format_html('<span style="color: green; font-weight: bold;">{}</span>', "Aprobado en Colegio")
+        else:
+            return format_html('<span style="color: red; font-weight: bold;">{}</span>', "DNI No Encontrado")
+            
+    verificacion_sistema.short_description = 'Validacion Automatica'
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        
+        if request.user.is_superuser:
+            return qs
+            
+        if not hasattr(request.user, 'perfil'):
+            return qs.none()
+            
+        perfil_usuario = request.user.perfil
+        
+        if perfil_usuario.rol == 'DIRECTOR':
+            return qs.filter(rol__in=['PADRE', 'DOCENTE'])
+            
+        if perfil_usuario.rol == 'SECRETARIA':
+            return qs.filter(rol__in=['DOCENTE', 'PADRE'])
+            
+        return qs.none()
+
 
 @admin.register(Estudiante)
 class EstudianteAdmin(admin.ModelAdmin):
@@ -96,13 +136,15 @@ class EstudianteAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        
         if request.user.is_superuser:
             return qs
-        
+            
         if not hasattr(request.user, 'perfil'):
             return qs.none()
 
         perfil = request.user.perfil
+        
         if perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
             return qs
         
@@ -112,7 +154,9 @@ class EstudianteAdmin(admin.ModelAdmin):
                 grado=perfil.grado_asignado,
                 seccion=perfil.seccion_asignada
             )
+            
         return qs.none()
+
 
 @admin.register(Designacion)
 class DesignacionAdmin(admin.ModelAdmin):
@@ -188,12 +232,10 @@ class ComunicadoAdmin(admin.ModelAdmin):
         if perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
             return qs
         if perfil.rol == 'DOCENTE':
-            # Un docente solo ve sus propios comunicados no generales
             return qs.filter(autor=request.user, es_general=False)
         return qs.none()
 
     def save_model(self, request, obj, form, change):
-        # Aseguramos que el autor sea siempre quien crea el comunicado
         if not hasattr(request.user, 'perfil'):
             super().save_model(request, obj, form, change)
             return
@@ -201,7 +243,7 @@ class ComunicadoAdmin(admin.ModelAdmin):
         if request.user.perfil.rol == 'DOCENTE':
             obj.es_general = False
             obj.autor = request.user
-        elif not change: # Solo al crear
+        elif not change: 
             obj.autor = request.user
         super().save_model(request, obj, form, change)
 
@@ -216,4 +258,3 @@ class ActividadAdmin(admin.ModelAdmin):
         if request.user.is_superuser or request.user.perfil.rol in ['DIRECTOR', 'SECRETARIA', 'ADMIN']:
             return True
         return False
-    

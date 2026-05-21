@@ -1,101 +1,313 @@
-{% extends "base.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Iniciar Sesión | I.E. Juana Cervantes</title>
+    <!-- Bootstrap 5 + Iconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block guest_content %}
-<style>
-    .glass-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 25px;
-        padding: 40px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    }
-    .form-control {
-        background: rgba(255, 255, 255, 0.9);
-        border: none;
-        border-radius: 12px;
-        padding-left: 45px; /* Espacio para el icono */
-    }
-    .input-group-text {
-        background: transparent;
-        border: none;
-        position: absolute;
-        z-index: 10;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        padding-left: 15px;
-        color: #003366;
-    }
-    .btn-admin {
-        background: #007bff;
-        border: none;
-        border-radius: 12px;
-        transition: 0.3s;
-    }
-    .btn-admin:hover {
-        background: #0056b3;
-        transform: translateY(-2px);
-    }
-    .btn-guest {
-        border: 2px solid #ffffff;
-        border-radius: 12px;
-        color: white;
-        transition: 0.3s;
-    }
-    .btn-guest:hover {
-        background: white;
-        color: #001a33;
-    }
-</style>
+        body {
+            font-family: 'Segoe UI', system-ui, 'Helvetica Neue', sans-serif;
+            background: radial-gradient(circle, #003366 0%, #000d1a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-<div class="d-flex justify-content-center align-items-center vh-100" style="background: radial-gradient(circle, #003366 0%, #000d1a 100%);">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
-    <div class="glass-card text-center" style="width: 100%; max-width: 420px;">
-        <!-- LOGO CENTRADO -->
-        <img src="{% static 'inventario/logo.jpg' %}" class="mb-3 mx-auto d-block shadow-sm rounded-circle" style="width: 280px; background: white; padding: 5px;">
+        /* Tarjeta tipo vidrio */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 40px 35px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease;
+        }
+
+        /* Logo */
+        .logo {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            background: white;
+            border-radius: 50%;
+            padding: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Títulos */
+        .institution-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: white;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+        }
+
+        /* Campos de formulario con ícono dentro */
+        .input-icon {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #003366;
+            z-index: 2;
+            font-size: 1.1rem;
+        }
+        .form-control-custom {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 15px 14px 45px;
+            width: 100%;
+            font-size: 1rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .form-control-custom:focus {
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255,193,7,0.4);
+        }
+
+        /* Botones */
+        .btn-primary-custom {
+            background: #007bff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 100%;
+            color: white;
+            transition: 0.3s;
+        }
+        .btn-primary-custom:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning-custom {
+            background: #ffc107;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 700;
+            width: 100%;
+            color: #212529;
+            transition: 0.3s;
+        }
+        .btn-warning-custom:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-guest {
+            background: transparent;
+            border: 2px solid white;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 700;
+            width: 100%;
+            color: white;
+            transition: 0.3s;
+        }
+        .btn-outline-guest:hover {
+            background: white;
+            color: #001a33;
+            transform: translateY(-2px);
+        }
+
+        /* Enlaces */
+        .toggle-link {
+            color: #ffc107;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: white;
+        }
+
+        /* Separador */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 25px 0 20px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+        .divider::before {
+            margin-right: 12px;
+        }
+        .divider::after {
+            margin-left: 12px;
+        }
+
+        /* Alertas */
+        .alert-custom {
+            background: rgba(220, 53, 69, 0.9);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 0.85rem;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .alert-success-custom {
+            background: rgba(40, 167, 69, 0.9);
+        }
+
+        /* Animaciones suaves */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card text-center">
+        <!-- Logo -->
+        <img src="{% static 'inventario/logo.jpg' %}" alt="Logo Colegio" class="logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/130?text=Logo';">
         
-        <div class="mb-4">
-            <i class="fas fa-boxes fa-4x text-white mb-2"></i>
-            <h2 class="text-white fw-bold tracking-tight">GESTION PEDAGÓGICA</h2>
-            <p class="text-white-50">I.E.E JUANA CERVANTES DE BOLOGNESI</p>
-        </div>
-        
-        <form method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div class="mb-3 position-relative">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" name="username" class="form-control" placeholder="Nombre de usuario" required>
-            </div>
-            <div class="mb-4 position-relative">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
-            </div>
-            
-            <div class="d-grid gap-2 mb-3">
-                <button type="submit" class="btn btn-admin btn-lg text-white fw-bold">
-                    ENTRAR COMO ADMIN
+        <div class="institution-title">GESTIÓN PEDAGÓGICA</div>
+        <div class="subtitle">I.E.E. JUANA CERVANTES DE BOLOGNESI</div>
+
+        <!-- Mensajes de error/éxito -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-custom {% if message.tags == 'success' %}alert-success-custom{% endif %} fade-in">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-triangle{% endif %} me-2"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- PANEL LOGIN TRADICIONAL -->
+        <div id="panel-login-tradicional" class="fade-in">
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action_type" value="login_habitual">
+                
+                <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" class="form-control-custom" placeholder="Usuario" required autocomplete="username">
+                </div>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" class="form-control-custom" placeholder="Contraseña" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary-custom mb-3">
+                    <i class="fas fa-sign-in-alt me-2"></i> ENTRAR
                 </button>
+            </form>
+            <div class="mt-2">
+                <a href="javascript:void(0);" onclick="mostrarPanelActivacion()" class="toggle-link">
+                    <i class="fas fa-user-plus me-1"></i> ¿Primera vez como padre? Activa tu cuenta aquí
+                </a>
             </div>
-        </form>
-
-        <div class="d-flex align-items-center my-4">
-            <hr class="flex-grow-1 text-white-50">
-            <span class="mx-3 text-white-50 small">O BIEN</span>
-            <hr class="flex-grow-1 text-white-50">
         </div>
 
+        <!-- PANEL ACTIVACIÓN DE PADRE (oculto inicialmente) -->
+        <div id="panel-activacion-padre" style="display: none;" class="fade-in">
+            <h5 class="text-warning fw-bold mb-3"><i class="fas fa-shield-alt me-2"></i>PRIMER INGRESO DE FAMILIA</h5>
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action_type" value="registro_activacion">
+                
+                <div class="input-icon">
+                    <i class="fas fa-id-card"></i>
+                    <input type="text" name="dni_padre" class="form-control-custom" placeholder="DNI del Apoderado" required>
+                </div>
+                <div class="input-icon">
+                    <i class="fas fa-child"></i>
+                    <input type="text" name="dni_hija" class="form-control-custom" placeholder="DNI de la Alumna" required>
+                </div>
+                <div class="input-icon">
+                    <i class="fas fa-key text-warning"></i>
+                    <input type="password" name="nueva_password" class="form-control-custom" placeholder="Crea tu nueva contraseña" minlength="6" required>
+                </div>
+                <button type="submit" class="btn-warning-custom mb-2">
+                    <i class="fas fa-save me-2"></i> GUARDAR CLAVE E INGRESAR
+                </button>
+            </form>
+            <div class="mt-2">
+                <a href="javascript:void(0);" onclick="mostrarPanelLogin()" class="back-link">
+                    <i class="fas fa-arrow-left me-1"></i> Volver al inicio de sesión
+                </a>
+            </div>
+        </div>
+
+        <!-- Separador O BIEN -->
+        <div class="divider">O BIEN</div>
+
+        <!-- Acceso Invitado -->
         <form action="{% url 'invitado' %}" method="POST">
             {% csrf_token %}
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-guest btn-lg fw-bold">
-                    ACCESO INVITADO
-                </button>
-            </div>
+            <button type="submit" class="btn-outline-guest">
+                <i class="fas fa-eye me-2"></i> ACCESO INVITADO
+            </button>
         </form>
+
+        <div class="mt-4 small text-white-50">
+            <i class="fas fa-laptop me-1"></i> Sistema académico institucional
+        </div>
     </div>
-</div>
-{% endblock %}
+
+    <script>
+        function mostrarPanelActivacion() {
+            document.getElementById('panel-login-tradicional').style.display = 'none';
+            document.getElementById('panel-activacion-padre').style.display = 'block';
+        }
+        function mostrarPanelLogin() {
+            document.getElementById('panel-login-tradicional').style.display = 'block';
+            document.getElementById('panel-activacion-padre').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

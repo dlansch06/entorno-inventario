@@ -4,23 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>COLEGIO JUANA CERVANTES</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --sidebar-bg: #1a1a1a;
-            --primary-blue: #0d6efd;
+            --sidebar-bg: #111827; /* Azul oscuro profundo (Tailwind Gray 900) */
+            --sidebar-hover: #1f2937;
+            --primary-blue: #3b82f6; /* Azul brillante moderno */
             --sidebar-width: 280px;
+            --text-muted: #9ca3af;
         }
 
         body { 
             margin: 0; 
-            background-color: #f8f9fa; 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background-color: #f3f4f6; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
             overflow-x: hidden;
         }
 
@@ -30,103 +32,140 @@
             height: 100vh; 
             background: var(--sidebar-bg); 
             position: fixed; 
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             z-index: 1050; 
-            transition: all 0.3s ease-in-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
-            flex-direction: column; /* CORREGIDO: Antes decía flex-column: column */
+            flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
         
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        /* Contenedor del Logo Mejorado */
+        .logo-container {
+            width: 85px;
+            height: 85px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); /* Resplandor azul */
+            border: 3px solid var(--primary-blue);
+        }
+
+        .sidebar-logo {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+        }
+
         .main-content { 
             margin-left: var(--sidebar-width); 
             min-height: 100vh; 
-            padding: 25px; 
-            transition: all 0.3s ease-in-out;
+            padding: 30px; 
+            transition: all 0.3s ease;
         }
 
-        /* Estilos de Navegación */
+        /* --- NAVEGACIÓN --- */
+        .nav-custom {
+            padding: 0 1rem;
+        }
+
         .nav-link {
-            transition: all 0.2s;
-            border-radius: 10px;
-            margin-bottom: 5px;
-            color: rgba(255,255,255,0.8) !important;
+            transition: all 0.3s;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            color: var(--text-muted) !important;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem !important;
         }
+
+        .nav-link i {
+            font-size: 1.25rem;
+            margin-right: 12px;
+        }
+
         .nav-link:hover { 
-            background: rgba(255,255,255,0.1); 
-            transform: translateX(5px);
+            background: var(--sidebar-hover); 
             color: #fff !important;
+            transform: translateX(4px);
         }
+
         .nav-link.active { 
-            background: var(--primary-blue) !important; 
+            background: linear-gradient(135deg, var(--primary-blue), #2563eb) !important; 
             color: #fff !important;
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
 
         .nav-section-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #6c757d;
-            margin: 20px 0 10px 15px;
-            font-weight: bold;
+            letter-spacing: 1.5px;
+            color: #4b5563;
+            margin: 1.5rem 0 0.75rem 1.2rem;
+            font-weight: 700;
         }
-        
-        .sidebar-logo {
-            width: 120px;
-            height: auto;
-            margin: 20px auto;
-            display: block;
-            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5));
+
+        /* --- BOTÓN SALIR --- */
+        .sidebar-footer {
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-radius: 12px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-logout:hover {
+            background: #ef4444;
+            color: white;
+            transform: translateY(-2px);
         }
 
         /* --- RESPONSIVIDAD --- */
         @media (max-width: 991.98px) {
-            .sidebar { 
-                left: calc(-1 * var(--sidebar-width)); /* Esconde el menú a la izquierda */
-            }
-            .sidebar.active { 
-                left: 0; /* Lo muestra */
-            }
-            .main-content { 
-                margin-left: 0; 
-                padding-top: 80px; 
-            }
-            .mobile-header { 
-                display: flex !important; 
-            }
+            .sidebar { left: calc(-1 * var(--sidebar-width)); }
+            .sidebar.active { left: 0; }
+            .main-content { margin-left: 0; padding-top: 90px; }
+            .mobile-header { display: flex !important; }
         }
         
         .mobile-header {
             display: none;
             background: var(--sidebar-bg);
             color: white;
-            padding: 12px 20px;
+            padding: 15px 20px;
             position: fixed;
             width: 100%;
-            top: 0;
-            z-index: 1040;
+            top: 0; z-index: 1040;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         #sidebarOverlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.5); 
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
             z-index: 1045;
         }
         #sidebarOverlay.active { display: block; }
 
-        .login-screen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #00264d 0%, #001a33 100%);
-        }
     </style>
 </head>
 <body>
@@ -135,77 +174,87 @@
         
         <div class="mobile-header">
             <div class="d-flex align-items-center">
-                <img src="{% static 'inventario/logo.jpg' %}" alt="Logo" style="width: 30px; margin-right: 10px;">
-                <h6 class="m-0 fw-bold">JUANA CERVANTES</h6>
+                <div class="bg-white rounded-circle p-1 me-2" style="width: 35px; height: 35px;">
+                    <img src="{% static 'inventario/logo.jpg' %}" alt="Logo" class="img-fluid rounded-circle">
+                </div>
+                <h6 class="m-0 fw-bold letter-spacing-1">JUANA CERVANTES</h6>
             </div>
-            <button class="btn btn-outline-light border-0" id="sidebarToggle">
-                <i class="bi bi-list fs-3"></i>
-            </button>
+            <button class="btn btn-outline-light border-0" id="sidebarToggle"><i class="bi bi-list fs-2"></i></button>
         </div>
 
         <div id="sidebarOverlay"></div>
 
-        <div class="sidebar p-3 shadow" id="sidebar">
-            <div class="text-center">
-                <img src="{% static 'inventario/logo.jpg' %}" alt="Logo" class="sidebar-logo">
-                <h5 class="text-white fw-bold mb-0">COLEGIO JUANA CERVANTES</h5>
-                <p class="text-muted small">Panel de Control</p>
+        <div class="sidebar shadow-lg" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="{% static 'inventario/logo.jpg' %}" alt="Logo" class="sidebar-logo">
+                </div>
+                <h6 class="text-white fw-bold mb-1" style="font-size: 0.9rem;">I.E. JUANA CERVANTES</h6>
+                
+                <div class="mt-2 mb-2 p-2 rounded-3" style="background: rgba(255,255,255,0.05);">
+                    {% if user.is_authenticated %}
+                        <div class="text-success fw-bold" style="font-size: 0.7rem;">BIENVENIDO</div>
+                        <div class="text-white fw-bold" style="font-size: 0.8rem;">{{ user.username }}</div>
+                    {% elif request.session.es_invitado %}
+                        <div class="text-warning fw-bold" style="font-size: 0.7rem;">MODO INVITADO</div>
+                    {% endif %}
+                </div>
+
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.65rem;">SISTEMA DE GESTIÓN</span>
             </div>
             
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="{% url 'dashboard' %}" class="nav-link p-3 {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                        <i class="bi bi-house-door me-2"></i> INICIO
-                    </a>
-                </li>
+            <div class="nav-custom overflow-y-auto">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                            <i class="bi bi-grid-1x2-fill"></i> INICIO
+                        </a>
+                    </li>
 
-                <li><div class="nav-section-title">NOSOTROS</div></li>
-                <li class="nav-item">
-    
-                    <a href="{% url 'info' %}" class="nav-link p-3 {% if request.resolver_match.url_name == 'info' %}active{% endif %}">
-                        <i class="bi bi-info-circle me-2"></i> Acerca del colegio
-                    </a>    
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link p-3">
-                        <i class="bi bi-info-circle me-2"></i> Niveles educativos
-                    </a>
-                </li>
+                    <li><div class="nav-section-title">NOSOTROS</div></li>
+                    <li class="nav-item">
+                        <a href="{% url 'info' %}" class="nav-link {% if request.resolver_match.url_name == 'info' %}active{% endif %}">
+                            <i class="bi bi-bank"></i> Acerca del colegio
+                        </a>    
+                    </li>
+                    
 
-                <li><div class="nav-section-title">ACADÉMICO</div></li>
-                <li class="nav-item">
-                    <a href="{% url 'notas' %}" class="nav-link p-3 {% if request.resolver_match.url_name == 'notas' %}active{% endif %}">
-                        <i class="bi bi-journal-text me-2"></i> Consulta Notas
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'asistencias' %}" class="nav-link p-3 {% if request.resolver_match.url_name == 'asistencias' %}active{% endif %}">
-                        <i class="bi bi-calendar-check me-2"></i> Asistencias
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link p-3">
-                        <i class="bi bi-chat-dots me-2"></i> Comunicados
-                    </a>
-                </li>     
-                <li><div class="nav-section-title">INVENTARIO DE EQUIPOS</div></li>
-                <li class="nav-item">
-                    <a href="{% url 'reportes' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'reportes' %}active{% endif %}">
-                        <i class="bi bi-file-earmark-bar-graph me-2"></i> REPORTES
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'inventario' %}" class="nav-link text-white p-3 {% if request.resolver_match.url_name == 'inventario' %}active{% endif %}">
-                        <i class="bi bi-box-seam me-2"></i> INVENTARIO
-                    </a>
-                </li>
-            </ul>
+                    <li><div class="nav-section-title">ACADÉMICO</div></li>
+                    <li class="nav-item">
+                        <a href="{% url 'notas' %}" class="nav-link {% if request.resolver_match.url_name == 'notas' %}active{% endif %}">
+                            <i class="bi bi-file-earmark-spreadsheet"></i> Consulta Notas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'asistencias' %}" class="nav-link {% if request.resolver_match.url_name == 'asistencias' %}active{% endif %}">
+                            <i class="bi bi-calendar2-check"></i> Asistencias
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'comunicados' %}" class="nav-link {% if request.resolver_match.url_name == 'comunicados' %}active{% endif %}">
+                            <i class="bi bi-megaphone"></i> Comunicados
+                        </a>
+                    </li> 
+                    <li class="nav-item">
+                        <a href="{% url 'actividades' %}" class="nav-link {% if request.resolver_match.url_name == 'actividades' %}active{% endif %}">
+                            <i class="bi bi-calendar-event"></i> Actividades
+                        </a>
+                    </li>
 
-            <div class="border-top pt-3">
+                    <li><div class="nav-section-title">GESTIÓN</div></li>
+                    <li class="nav-item">
+                        <a href="{% url 'inventario' %}" class="nav-link {% if request.resolver_match.url_name == 'inventario' %}active{% endif %}">
+                            <i class="bi bi-cpu"></i> Inventario
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger w-100 border-0 text-start p-3">
-                        <i class="bi bi-box-arrow-left me-2"></i> SALIR
+                    <button type="submit" class="btn btn-logout w-100 p-2 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-box-arrow-left me-2"></i> SALIR DEL PANEL
                     </button>
                 </form>
             </div>
@@ -218,7 +267,7 @@
         </div>
 
     {% else %}
-        <div class="login-screen" style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:#001a33;">
+        <div class="login-screen">
             {% block guest_content %}{% endblock %}
         </div>
     {% endif %}

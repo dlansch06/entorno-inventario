@@ -6,35 +6,97 @@
         <div class="col-md-6">
             <div class="card border-0 shadow-lg rounded-4 p-4">
                 <div class="text-center mb-4">
-                    <div class="bg-primary bg-opacity-10 d-inline-block p-3 rounded-circle mb-3">
-                        <i class="bi bi-person-plus text-primary fs-2"></i>
-                    </div>
                     <h2 class="fw-bold">Registro de Familia</h2>
-                    <p class="text-muted">Vincula tu cuenta para ver datos reales y comunicados oficiales.</p>
+                    <p class="text-muted">Vincula tu cuenta para ver datos reales.</p>
                 </div>
 
-                <form method="POST">
+                <div id="alert-container"></div>
+
+                <form id="form-registro-automatizado" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label class="form-label fw-bold">DNI del Padre/Madre</label>
-                        <input type="text" name="dni_padre" class="form-control form-control-lg bg-light" placeholder="8 dígitos" required>
+                        <input type="text" id="dni_padre" class="form-control form-control-lg bg-light" placeholder="8 dígitos" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nombre Completo</label>
-                        <input type="text" name="nombre" class="form-control form-control-lg bg-light" required>
+                        <input type="text" id="nombre_completo" class="form-control form-control-lg bg-light" required>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Código del Estudiante (Hija)</label>
-                        <input type="text" name="codigo_hija" class="form-control form-control-lg bg-light" placeholder="Ej: EST-2026" required>
-                        <small class="text-muted">Este código lo encuentras en la libreta física.</small>
+                        <label class="form-label fw-bold">DNI de la Estudiante (Hija)</label>
+                        <input type="text" id="codigo_estudiante" class="form-control form-control-lg bg-light" placeholder="Ej: 74125896" required>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3">
-                        Registrar y Ver Comunicados
+                    <button type="submit" id="btn-submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3">
+                        <span id="btn-text">Registrar y Ver Comunicados</span>
+                        <span id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('form-registro-automatizado').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Evita que la página se recargue a la antigua
+
+    const alertContainer = document.getElementById('alert-container');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    
+    alertContainer.innerHTML = ''; 
+    btnSubmit.disabled = true;
+    btnSpinner.classList.remove('d-none');
+
+    // Capturamos el token CSRF obligatorio de Django
+    const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    // Recolectamos los datos de los inputs
+    const datos = {
+        accion: 'registrar',
+        dniPadre: document.getElementById('dni_padre').value.trim(),
+        nombrePadre: document.getElementById('nombre_completo').value.trim(),
+        dniHija: document.getElementById('codigo_estudiante').value.trim()
+    };
+
+    try {
+        // Apuntamos DIRECTAMENTE a la API automatizada
+        const response = await fetch("{% url 'procesar_acceso_padre' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': token,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(datos)
+        });
+
+        const resultado = await response.json();
+
+        if (response.ok) {
+            alertContainer.innerHTML = `
+                <div class="alert alert-success rounded-3">
+                    ${resultado.message} Redirigiendo...
+                </div>`;
+            setTimeout(() => {
+                window.location.href = resultado.redirect_url; 
+            }, 1500);
+        } else {
+            alertContainer.innerHTML = `<div class="alert alert-danger">${resultado.message}</div>`;
+            restaurarBoton();
+        }
+    } catch (error) {
+        alertContainer.innerHTML = `<div class="alert alert-danger">Error de comunicación con el servidor.</div>`;
+        restaurarBoton();
+    }
+});
+
+function restaurarBoton() {
+    document.getElementById('btn-submit').disabled = false;
+    document.getElementById('btn-text').innerText = "Registrar y Ver Comunicados";
+    document.getElementById('btn-spinner').classList.add('d-none');
+}
+</script>
 {% endblock %}

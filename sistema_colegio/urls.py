@@ -18,11 +18,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from django.shortcuts import redirect
 from inventario import views 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    
     path('', views.login_view, name='login'),
+    path('admin/', admin.site.urls),
     path('invitado/', views.invitado_view, name='invitado'),
 
     
@@ -30,6 +32,11 @@ urlpatterns = [
 
     path('consulta-notas/', views.notas_view, name='notas'),
     path('consulta-asistencias/', views.asistencias_view, name='asistencias'),
+    path('consulta-actividades/', views.actividades_view, name='actividades'),
+    path('comunicados/', views.comunicados_view, name='comunicados'),
+    path('niveles-educativos/', views.nivel_academico, name='niveles'),
+    path('api/procesar-acceso-padre/', views.procesar_acceso_padre_view, name='procesar_acceso_padre'),
+
     path('registro-padre/', views.registro_padre_view, name='registro_padre'),
     path('reportes/', views.reportes_view, name='reportes'),
     path('equipos/', views.inventario_view, name='inventario'),

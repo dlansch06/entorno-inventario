@@ -1,105 +1,277 @@
-{% extends "base.html" %}
-
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<style>
-    :root {
-        --assist-green: #10b981;
-        --assist-orange: #f59e0b;
-        --assist-red: #ef4444;
-        --assist-blue: #3b82f6;
-        --bg-panel: #f8fafc;
-    }
-    body { background-color: var(--bg-panel); }
-    .card-stat {
-        border: none;
-        border-radius: 16px;
-        transition: transform 0.3s ease;
-        background: white;
-        border-left: 5px solid transparent;
-    }
-    .card-stat:hover { transform: translateY(-5px); }
-    .stat-assist { border-left-color: var(--assist-green); }
-    .stat-tardy { border-left-color: var(--assist-orange); }
-    .stat-absent { border-left-color: var(--assist-red); }
-    .stat-percent { border-left-color: var(--assist-blue); }
-    
-    .icon-box {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .badge-presente { background-color: #dcfce7; color: #15803d; border-radius: 20px; padding: 4px 12px; font-weight: 600; }
-    .badge-tardanza { background-color: #fef3c7; color: #b45309; border-radius: 20px; padding: 4px 12px; font-weight: 600; }
-    .badge-falta { background-color: #fee2e2; color: #b91c1c; border-radius: 20px; padding: 4px 12px; font-weight: 600; }
-    
-    .info-card {
-        background: white;
-        border-radius: 15px;
-        border: none;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        height: 100%;
-    }
-</style>
-
-<div class="container py-5">
-    <!-- FORMULARIO DE ACCESO (Imagen {C73DBDF3-3AEB-4E0C-948D-1C442CB04363}.png) -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-lg p-4 rounded-4">
-                <div class="text-center mb-4">
-                    <div class="bg-primary bg-opacity-10 d-inline-block p-3 rounded-circle mb-3">
-                        <i class="bi bi-person-badge text-primary fs-2"></i>
-                    </div>
-                    <h2 class="fw-bold">Acceder al Sistema</h2>
-                    <p class="text-muted">Ingresa tus datos de acceso para consultar la asistencia</p>
-                </div>
-                
-                <form method="POST" action="{% if es_invitado %}{% url 'registro_padre' %}{% endif %}">
-                    {% csrf_token %}
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">Número de DNI o Código Personal</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-fingerprint"></i></span>
-                            <input type="text" class="form-control border-start-0 bg-light" placeholder="Ingresa tu DNI o código personal">
-                        </div>
-                        <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Si no tienes tu código, contacta con dirección.</small>
-                    </div>
-                    
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Nombre del Estudiante <span class="text-muted small">(opcional)</span></label>
-                            <input type="text" class="form-control bg-light" placeholder="Nombre completo">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Grado / Año <span class="text-muted small">(opcional)</span></label>
-                            <select class="form-select bg-light">
-                                <option>3° Primaria</option>
-                                <option>4° Primaria</option>
-                                <option>5° Secundaria</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow-sm">
-                        <i class="bi bi-search me-2"></i> Consultar Asistencia
-                    </button>
-                </form>
-            </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencias | I.E. Juana Cervantes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+        }
+        body {
+            background: var(--bg);
+            font-family: system-ui, 'Segoe UI', 'Inter', sans-serif;
+        }
+        .consulta-container {
+            max-width: 1400px;
+        }
+        .hero-box {
+            background: linear-gradient(rgba(15,23,42,.78), rgba(15,23,42,.78)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600');
+            background-size: cover;
+            background-position: center;
+            border-radius: 28px;
+            padding: 70px 45px;
+            color: white;
+            margin-bottom: 35px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-box::before {
+            content: '';
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            background: rgba(255,255,255,.08);
+            border-radius: 50%;
+            top: -120px;
+            right: -120px;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+        .hero-sub {
+            color: rgba(255,255,255,.88);
+            max-width: 700px;
+            font-size: 1.05rem;
+        }
+        .top-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .btn-custom {
+            border: none;
+            padding: 13px 24px;
+            border-radius: 14px;
+            font-weight: 600;
+            transition: .3s;
+            text-decoration: none;
+        }
+        .btn-login {
+            background: white;
+            color: var(--primary-dark);
+        }
+        .btn-register {
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        .btn-custom:hover {
+            transform: translateY(-3px);
+        }
+        .card-modern {
+            border: none;
+            border-radius: 24px;
+            background: var(--card);
+            box-shadow: 0 12px 30px rgba(15,23,42,.05);
+        }
+        .form-control, .form-select {
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+        .search-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            font-weight: 700;
+            transition: .3s;
+        }
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+        .student-header {
+            padding: 30px;
+            border-bottom: 1px solid var(--border);
+        }
+        .student-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        /* Tarjetas de estadísticas */
+        .card-stat {
+            border: none;
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+            background: white;
+            border-left: 5px solid transparent;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .card-stat:hover { transform: translateY(-5px); }
+        .stat-assist { border-left-color: var(--success); }
+        .stat-tardy { border-left-color: var(--warning); }
+        .stat-absent { border-left-color: var(--danger); }
+        .stat-percent { border-left-color: var(--primary); }
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .table-modern {
+            margin: 0;
+        }
+        .table-modern thead {
+            background: #eff6ff;
+        }
+        .table-modern th {
+            border: none;
+            padding: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .table-modern td {
+            padding: 18px;
+            border-color: #f1f5f9;
+            vertical-align: middle;
+        }
+        .badge-custom {
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: .82rem;
+            font-weight: 700;
+        }
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .demo-badge {
+            background: #fef3c7;
+            color: #b45309;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-left: 12px;
+        }
+        .alert-modern {
+            border-radius: 16px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+        }
+        .alert-warning-custom {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .hero-box { padding: 45px 25px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid consulta-container py-4">
+    <!-- Hero con botones de login/registro -->
+    <div class="hero-box">
+        <h1 class="hero-title">Control de Asistencia</h1>
+        <p class="hero-sub">Consulta la asistencia, puntualidad y justificaciones de la estudiante en tiempo real.</p>
+        <div class="top-buttons">
+            <a href="{% url 'login' %}" class="btn-custom btn-login">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
+            </a>
+            <a href="{% url 'registro_padre' %}" class="btn-custom btn-register">
+                <i class="bi bi-person-plus me-2"></i> Registrarse
+            </a>
         </div>
     </div>
 
-    <!-- DASHBOARD DE ESTADÍSTICAS (Imagen {496F3145-3962-4347-AEED-BCA7152D1259}.png) -->
-    <div class="row g-4 mb-4">
+    <!-- Formulario de búsqueda -->
+    <div class="card card-modern p-4 mb-5">
+        <div class="text-center mb-4">
+            <i class="bi bi-calendar-check-fill text-primary" style="font-size: 3rem;"></i>
+            <h2 class="fw-bold mt-3">Buscar Estudiante</h2>
+            <p class="text-muted">Ingresa DNI y nombre completo para consultar la asistencia</p>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">DNI de la Estudiante</label>
+                    <input type="text" class="form-control" name="documento" placeholder="Ingresa el DNI" value="{{ request.POST.documento|default:'' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Nombre de la Estudiante</label>
+                    <input type="text" class="form-control" name="nombre" placeholder="Nombre completo" value="{{ request.POST.nombre|default:'' }}">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-4 search-btn">
+                <i class="bi bi-search me-2"></i> Consultar Asistencia
+            </button>
+        </form>
+    </div>
+
+    <!-- Mensajes de error o warning -->
+    {% if error %}
+    <div class="alert alert-modern mb-4">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+    </div>
+    {% endif %}
+
+    {% if son_datos_falsos and not error %}
+    <div class="alert alert-warning alert-warning-custom mb-4" style="border-radius: 16px;">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <strong>Modo demostración:</strong> Actualmente se muestran datos de ejemplo (falsos). Para ver la asistencia real, inicia sesión como padre.
+    </div>
+    {% endif %}
+
+    <!-- Tarjetas de estadísticas (dinámicas) -->
+    <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="card card-stat stat-assist shadow-sm p-3">
+            <div class="card card-stat stat-assist p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <small class="text-muted fw-bold text-uppercase">Asistencias</small>
-                        <h2 class="fw-bold mb-0 text-success">142</h2>
+                        <h2 class="fw-bold mb-0 text-success">{{ estadisticas.presente|default:"142" }}</h2>
                         <small class="text-muted">días presente</small>
                     </div>
                     <div class="icon-box bg-success bg-opacity-10 text-success">
@@ -109,11 +281,11 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card card-stat stat-tardy shadow-sm p-3">
+            <div class="card card-stat stat-tardy p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <small class="text-muted fw-bold text-uppercase">Tardanzas</small>
-                        <h2 class="fw-bold mb-0 text-warning">5</h2>
+                        <h2 class="fw-bold mb-0 text-warning">{{ estadisticas.tardanza|default:"5" }}</h2>
                         <small class="text-muted">días con tardanza</small>
                     </div>
                     <div class="icon-box bg-warning bg-opacity-10 text-warning">
@@ -123,11 +295,11 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card card-stat stat-absent shadow-sm p-3">
+            <div class="card card-stat stat-absent p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <small class="text-muted fw-bold text-uppercase">Faltas</small>
-                        <h2 class="fw-bold mb-0 text-danger">3</h2>
+                        <h2 class="fw-bold mb-0 text-danger">{{ estadisticas.ausente|default:"3" }}</h2>
                         <small class="text-muted">días ausente</small>
                     </div>
                     <div class="icon-box bg-danger bg-opacity-10 text-danger">
@@ -137,11 +309,11 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card card-stat stat-percent shadow-sm p-3">
+            <div class="card card-stat stat-percent p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <small class="text-muted fw-bold text-uppercase">Asistencia</small>
-                        <h2 class="fw-bold mb-0 text-primary">96.6%</h2>
+                        <h2 class="fw-bold mb-0 text-primary">{{ estadisticas.porcentaje|floatformat:1|default:"96.6" }}%</h2>
                         <small class="text-muted">promedio general</small>
                     </div>
                     <div class="icon-box bg-primary bg-opacity-10 text-primary">
@@ -152,73 +324,97 @@
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
-        <div class="card-header bg-white py-3 border-0">
-            <h5 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i> Registro de Asistencia - Noviembre 2025</h5>
+    <!-- Tabla de registro de asistencia -->
+    <div class="card card-modern overflow-hidden mb-5">
+        <div class="student-header">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="student-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Estudiante</small>
+                            <span class="fw-bold fs-5">
+                                {% if estudiante %}
+                                    {{ estudiante.nombres }} {{ estudiante.apellidos }}
+                                {% else %}
+                                    Sin información
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <span class="text-muted">Últimos registros</span>
+                </div>
+            </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
+            <table class="table table-modern">
+                <thead>
                     <tr>
-                        <th class="ps-4">Fecha</th>
-                        <th>Día</th>
+                        <th>Fecha</th>
                         <th>Estado</th>
-                        <th>Observación</th>
+                        <th>Observación / Nota</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Ejemplo de datos falsos -->
+                    {% for a in asistencias %}
                     <tr>
-                        <td class="ps-4">25/11/2025</td>
-                        <td>Martes</td>
-                        <td><span class="badge-presente">Presente</span></td>
-                        <td class="text-muted">-</td>
+                        <td>{{ a.fecha }}</td>
+                        <td>
+                            {% if a.estado == 'Presente' %}
+                            <span class="badge-custom badge-success"><i class="bi bi-check-circle-fill me-1"></i> Presente</span>
+                            {% elif a.estado == 'Tardanza' %}
+                            <span class="badge-custom badge-warning"><i class="bi bi-clock-fill me-1"></i> Tardanza</span>
+                            {% else %}
+                            <span class="badge-custom badge-danger"><i class="bi bi-x-circle-fill me-1"></i> Ausente</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted">{% if a.observacion %}{{ a.observacion }}{% else %}—{% endif %}</td>
                     </tr>
+                    {% empty %}
                     <tr>
-                        <td class="ps-4">21/11/2025</td>
-                        <td>Viernes</td>
-                        <td><span class="badge-tardanza">Tardanza</span></td>
-                        <td class="text-muted small">Llegó 15 minutos tarde</td>
+                        <td colspan="3" class="text-center py-5">
+                            <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                            <p class="mt-3 text-muted">No hay registros de asistencia para mostrar.</p>
+                        </td>
                     </tr>
-                    <tr>
-                        <td class="ps-4">19/11/2025</td>
-                        <td>Miércoles</td>
-                        <td><span class="badge-falta">Falta</span></td>
-                        <td class="text-muted small">Justificada - cita médica</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- Información importante (footer) -->
     <div class="text-center mb-4">
         <h2 class="fw-bold">Información Importante</h2>
         <div style="width: 60px; height: 4px; background: orange; margin: 0 auto;"></div>
     </div>
-    
-    <div class="row g-4">
+    <div class="row g-4 mb-5">
         <div class="col-md-4">
-            <div class="card info-card p-4 border-start border-blue border-4">
-                <div class="bg-blue-100 icon-box mb-3" style="background:#e0f2fe; color:#0369a1;">
-                    <i class="bi bi-clock-fill"></i>
+            <div class="card border-0 shadow-sm p-4 h-100 rounded-4">
+                <div class="icon-box mb-3" style="background:#e0f2fe; color:#0369a1;">
+                    <i class="bi bi-clock-fill fs-4"></i>
                 </div>
                 <h5 class="fw-bold">Horario de Ingreso</h5>
                 <p class="text-muted small">El horario de ingreso es de 07:30 a.m. a 07:50 a.m. Las estudiantes que ingresen después serán registradas como tardanza.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card info-card p-4 border-start border-orange border-4" style="border-left-color:orange !important;">
-                <div class="bg-orange-100 icon-box mb-3" style="background:#ffedd5; color:#9a3412;">
-                    <i class="bi bi-file-earmark-plus-fill"></i>
+            <div class="card border-0 shadow-sm p-4 h-100 rounded-4">
+                <div class="icon-box mb-3" style="background:#ffedd5; color:#9a3412;">
+                    <i class="bi bi-file-earmark-plus-fill fs-4"></i>
                 </div>
                 <h5 class="fw-bold">Justificaciones</h5>
                 <p class="text-muted small">Las justificaciones deben presentarse dentro de los 3 días hábiles siguientes a la falta con el documento correspondiente.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card info-card p-4 border-start border-green border-4" style="border-left-color:green !important;">
-                <div class="bg-green-100 icon-box mb-3" style="background:#dcfce7; color:#166534;">
-                    <i class="bi bi-percent"></i>
+            <div class="card border-0 shadow-sm p-4 h-100 rounded-4">
+                <div class="icon-box mb-3" style="background:#dcfce7; color:#166534;">
+                    <i class="bi bi-percent fs-4"></i>
                 </div>
                 <h5 class="fw-bold">Asistencia Mínima</h5>
                 <p class="text-muted small">Se requiere un mínimo del 70% de asistencia para aprobar el año. Las faltas injustificadas afectan directamente esta nota.</p>
@@ -226,4 +422,8 @@
         </div>
     </div>
 </div>
-{% endblock %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock  %}

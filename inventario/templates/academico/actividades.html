@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --eval: #ef4444; --event: #22c55e; --reun: #f59e0b; --act: #1e293b;
+    }
+
+    body { background-color: #f8fafc; font-family: 'Urbanist', sans-serif; }
+
+    .header-banner {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        padding: 60px 0; color: white; border-bottom: 5px solid #fbbf24;
+    }
+
+    /* NAVEGACIÓN Y LEYENDA */
+    .calendar-nav-section { padding: 40px 0 20px; text-align: center; }
+    
+    .month-nav-card {
+        display: inline-flex; align-items: center; background: white;
+        padding: 12px 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .month-nav-card h2 { font-weight: 800; margin: 0 25px; color: #1e3a8a; min-width: 200px; }
+
+    .legend-dots { display: flex; justify-content: center; gap: 25px; font-weight: 700; color: #64748b; font-size: 0.9rem; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+
+    /* CALENDARIO CON MARCA DE AGUA */
+    .calendar-card-main {
+        position: relative; overflow: hidden; background: white;
+        border-radius: 30px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+    }
+
+    .calendar-card-main::before {
+        content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background-image: url('/static/inventario/logo.jpg'); 
+        background-repeat: no-repeat; background-position: center; background-size: 400px;
+        opacity: 0.06; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+    }
+
+    .calendar-table { position: relative; z-index: 1; width: 100%; border-collapse: collapse; }
+    .calendar-table th { padding: 20px; color: #94a3b8; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+    .calendar-table td { 
+        height: 120px; border: 1px solid #f1f5f9; vertical-align: top; 
+        padding: 15px; transition: 0.3s; cursor: pointer;
+    }
+    .calendar-table td:hover { background: rgba(241, 245, 249, 0.6); transform: translateY(-2px); }
+    .day-num { font-weight: 800; color: #1e293b; font-size: 1.1rem; }
+    
+    .ev-strip { 
+        font-size: 0.7rem; padding: 5px 10px; border-radius: 8px; color: white; 
+        font-weight: 700; margin-top: 8px; display: block; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    /* CATEGORÍAS (Cajas Pastel originales) */
+    .cat-card {
+        border-radius: 25px; padding: 30px; transition: 0.4s; text-align: center; height: 100%; cursor: pointer;
+    }
+    .cat-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
+    .cat-blue { background: #eef2ff; } .cat-gold { background: #fffbeb; }
+    .cat-green { background: #f0fdf4; } .cat-purple { background: #f5f3ff; }
+
+    .icon-box {
+        width: 60px; height: 60px; background: white; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* NUEVO DISEÑO AGREGADO: LISTA DE EVENTOS HORIZONTALES (Imagen 1) */
+    .event-row-card {
+        background: white; border-radius: 16px; border: 1px solid #e2e8f0;
+        padding: 20px; display: flex; gap: 20px; align-items: flex-start;
+        transition: 0.3s; margin-bottom: 20px;
+    }
+    .event-row-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.04); }
+
+    .date-block {
+        width: 75px; height: 75px; border-radius: 12px; display: flex;
+        flex-direction: column; align-items: center; justify-content: center;
+        text-align: center; flex-shrink: 0;
+    }
+    .date-block .month { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .date-block .day { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+
+    /* Fondos pastel para fechas según base de datos */
+    .bg-light-eval { background-color: #fee2e2; color: #ef4444; }
+    .bg-light-reun { background-color: #fef3c7; color: #d97706; }
+    .bg-light-event { background-color: #dcfce7; color: #15803d; }
+    .bg-light-act { background-color: #f1f5f9; color: #475569; }
+
+    .inner-badge { padding: 4px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: inline-block; margin-bottom: 10px; }
+    .badge-eval { background-color: #fee2e2; color: #ef4444; }
+    .badge-reun { background-color: #fef3c7; color: #b45309; }
+    .badge-event { background-color: #dcfce7; color: #15803d; }
+    .badge-act { background-color: #f1f5f9; color: #475569; }
+
+    /* PANALES LATERALES (Sidebar de Imagen 1) */
+    .sidebar-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 24px; margin-bottom: 24px; }
+    .sidebar-card h5 { font-weight: 800; color: #1e293b; margin-bottom: 20px; }
+    .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-weight: 600; color: #475569; }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+
+    .academic-period-item { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+    .period-check { width: 24px; height: 24px; border-radius: 50%; background: #dcfce7; color: #16803d; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+    .period-current { width: 24px; height: 24px; border-radius: 50%; background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; animation: pulse 2s infinite; }
+    
+    .important-date-box { background: #f8fafc; padding: 12px 16px; border-radius: 10px; margin-bottom: 12px; }
+
+    /* EVENTOS RECIENTES (Galería Azul Oscura Original) */
+    .dark-gallery-section { background: #1e3a8a; border-radius: 40px; padding: 60px; margin-top: 50px; }
+    .event-item-card { background: rgba(255,255,255,0.05); border-radius: 25px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; height: 100%; }
+    .event-item-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+    .img-box { height: 220px; position: relative; }
+    .img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .yellow-badge { position: absolute; top: 20px; left: 20px; background: #fbbf24; color: #1e3a8a; font-weight: 800; padding: 5px 15px; border-radius: 8px; font-size: 0.7rem; }
+    .event-body { padding: 25px; color: white; }
+
+    @keyframes pulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+</style>
+
+<div class="container-fluid header-banner mb-4">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Calendario de Actividades</h1>
+        <p class="lead opacity-75">Explora los eventos institucionales y académicos del Juana Cervantes.</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="calendar-nav-section">
+        <div class="month-nav-card">
+            <button class="btn nav-btn" onclick="cambiarMes(-1)"><i class="bi bi-chevron-left"></i></button>
+            <h2 id="mes-actual">Mayo 2026</h2>
+            <button class="btn nav-btn" onclick="cambiarMes(1)"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div class="legend-dots">
+            <span><span class="dot" style="background: var(--eval)"></span> Evaluaciones</span>
+            <span><span class="dot" style="background: var(--event)"></span> Eventos</span>
+            <span><span class="dot" style="background: var(--reun)"></span> Reuniones</span>
+        </div>
+    </div>
+
+    <div class="card calendar-card-main mb-5">
+        <table class="calendar-table">
+            <thead>
+                <tr><th>Dom</th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th></tr>
+            </thead>
+            <tbody id="calendar-body"></tbody>
+        </table>
+    </div>
+
+    <div class="section-header">
+        <h2 class="text-black fw-bold mb-5 ps-3 border-start border-4 border-warning">Categoria de Eventos</h2>
+    </div>
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="cat-card cat-blue">
+                <div class="icon-box"><i class="bi bi-mortarboard-fill text-primary fs-3"></i></div>
+                <h5 class="fw-bold">Académicos</h5>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="cat-card cat-gold">
+                <div class="icon-box"><i class="bi bi-palette-fill text-warning fs-3"></i></div>
+                <h5 class="fw-bold">Culturales</h5>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="cat-card cat-green">
+                <div class="icon-box"><i class="bi bi-trophy-fill text-success fs-3"></i></div>
+                <h5 class="fw-bold">Deportivos</h5>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="cat-card cat-purple">
+                <div class="icon-box"><i class="bi bi-people-fill text-purple fs-3"></i></div>
+                <h5 class="fw-bold">Comunitarios</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-lg-8">
+            <h2 class="text-black fw-bold mb-4 ps-3 border-start border-4 border-warning">Próximos Eventos</h2>
+            
+            {% for act in actividades %}
+            <div class="event-row-card shadow-sm">
+                <div class="date-block 
+                    {% if act.categoria == 'ACADEMICO' %}bg-light-eval
+                    {% elif act.categoria == 'CULTURAL' %}bg-light-reun
+                    {% elif act.categoria == 'DEPORTIVO' %}bg-light-event
+                    {% else %}bg-light-act{% endif %}">
+                    <span class="month">{{ act.fecha_actividad|date:"b" }}</span>
+                    <span class="day">{{ act.fecha_actividad|date:"d" }}</span>
+                </div>
+
+                <div class="flex-grow-1">
+                    <span class="inner-badge 
+                        {% if act.categoria == 'ACADEMICO' %}badge-eval
+                        {% elif act.categoria == 'CULTURAL' %}badge-reun
+                        {% elif act.categoria == 'DEPORTIVO' %}badge-event
+                        {% else %}badge-act{% endif %}">
+                        {{ act.get_categoria_display }}
+                    </span>
+                    <h4 class="fw-bold text-dark mb-2" style="font-size: 1.25rem;">{{ act.titulo }}</h4>
+                    <p class="text-secondary small mb-3">{{ act.descripcion|truncatechars:150 }}</p>
+                    
+                    <div class="d-flex gap-4 text-muted small fw-bold">
+                        <span><i class="bi bi-clock text-primary me-1"></i> {{ act.fecha_actividad|date:"H:i" }} hrs</span>
+                        {% if act.lugar %}
+                        <span><i class="bi bi-geo-alt text-danger me-1"></i> {{ act.lugar }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-5 bg-white rounded-4 border">
+                <h4 class="text-muted opacity-50">No hay eventos próximos.</h4>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sidebar-card shadow-sm">
+                <h5>Resumen del Mes</h5>
+                <div class="summary-item">
+                    <span><span class="summary-dot" style="background: var(--eval)"></span>Académicos</span>
+                    <span class="fw-bold text-dark" id="sidebar-eval">0</span>
+                </div>
+                <div class="summary-item">
+                    <span><span class="summary-dot" style="background: var(--reun)"></span>Culturales</span>
+                    <span class="fw-bold text-dark" id="sidebar-cultural">0</span>
+                </div>
+                <div class="summary-item">
+                    <span><span class="summary-dot" style="background: var(--event)"></span>Deportivos</span>
+                    <span class="fw-bold text-dark" id="sidebar-deportivo">0</span>
+                </div>
+                <div class="summary-item">
+                    <span><span class="summary-dot" style="background: var(--act)"></span>Otros</span>
+                    <span class="fw-bold text-dark" id="sidebar-otros">0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-card shadow-sm">
+                <h5>Períodos Académicos 2026</h5>
+                <div class="academic-period-item">
+                    <div class="period-check"><i class="bi bi-check-lg"></i></div>
+                    <div>
+                        <div class="fw-bold text-dark small">I Bimestre</div>
+                        <div class="text-muted extra-small" style="font-size: 0.75rem;">Marzo - Abril</div>
+                    </div>
+                </div>
+                <div class="academic-period-item">
+                    <div class="period-current"><i class="bi bi-arrow-repeat"></i></div>
+                    <div>
+                        <div class="fw-bold text-dark small">II Bimestre</div>
+                        <div class="text-muted extra-small" style="font-size: 0.75rem;">Mayo - Junio (En curso)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dark-gallery-section shadow-lg mb-5">
+        <h2 class="text-white fw-bold mb-5 ps-3 border-start border-4 border-warning">Eventos Recientes</h2>
+        <div class="row g-4">
+            {% for act in actividades %}
+            <div class="col-md-4">
+                <div class="event-item-card">
+                    <div class="img-box">
+                        <span class="yellow-badge">{{ act.get_categoria_display }}</span>
+                        {% if act.imagen %}<img src="{{ act.imagen.url }}" alt="{{ act.titulo }}">{% endif %}
+                    </div>
+                    <div class="event-body">
+                        <h4 class="fw-bold">{{ act.titulo }}</h4>
+                        <p class="small opacity-75">{{ act.descripcion|truncatechars:90 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div id="m-color" class="p-4 text-center text-white rounded-top-4">
+                <i class="bi bi-info-circle fs-1"></i>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <h3 id="m-title" class="fw-bold mb-3"></h3>
+                <div class="bg-light p-3 rounded-4 text-start shadow-sm">
+                    <p class="mb-2"><strong><i class="bi bi-clock text-primary"></i> Hora:</strong> <span id="m-time"></span></p>
+                    <p class="mb-0"><strong><i class="bi bi-geo-alt text-danger"></i> Lugar:</strong> <span id="m-place"></span></p>
+                </div>
+                <p id="m-desc" class="mt-3 text-muted small"></p>
+                <button class="btn btn-dark w-100 rounded-pill mt-3 py-2 fw-bold" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const eventosBD = [
+        {% for act in actividades %}
+        {
+            titulo: "{{ act.titulo|escapejs }}",
+            dia: {{ act.fecha_actividad|date:"j" }},
+            mes: {{ act.fecha_actividad|date:"n" }} - 1,
+            año: {{ act.fecha_actividad|date:"Y" }},
+            hora: "{{ act.fecha_actividad|date:'H:i' }}",
+            lugar: "{{ act.lugar|escapejs }}",
+            desc: "{{ act.descripcion|escapejs }}",
+            categoria: "{{ act.categoria }}",
+            color: "{% if act.categoria == 'ACADEMICO' %}#ef4444{% elif act.categoria == 'CULTURAL' %}#f59e0b{% elif act.categoria == 'DEPORTIVO' %}#22c55e{% else %}#1e293b{% endif %}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    let navDate = new Date(2026, 4, 15);
+
+    function render() {
+        const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        document.getElementById('mes-actual').innerText = `${months[navDate.getMonth()]} ${navDate.getFullYear()}`;
+        
+        const first = new Date(navDate.getFullYear(), navDate.getMonth(), 1).getDay();
+        const days = new Date(navDate.getFullYear(), navDate.getMonth() + 1, 0).getDate();
+        
+        let html = "<tr>";
+        for (let i = 0; i < first; i++) html += "<td class='bg-light opacity-50'></td>";
+        
+        for (let d = 1; d <= days; d++) {
+            if ((d + first - 1) % 7 === 0 && d > 1) html += "</tr><tr>";
+            const ev = eventosBD.find(e => e.dia === d && e.mes === navDate.getMonth());
+            let evHtml = ev ? `<span class="ev-strip" style="background:${ev.color}" onclick="abrirDetalle('${ev.titulo}','${ev.hora}','${ev.lugar}','${ev.desc}','${ev.color}')">${ev.titulo}</span>` : '';
+            html += `<td><span class="day-num">${d}</span>${evHtml}</td>`;
+        }
+        document.getElementById('calendar-body').innerHTML = html + "</tr>";
+
+        // CONTEO DINÁMICO PARA EL SIDEBAR (De acuerdo al mes visible)
+        const eventosMes = eventosBD.filter(e => e.mes === navDate.getMonth() && e.año === navDate.getFullYear());
+        document.getElementById('sidebar-eval').innerText = eventosMes.filter(e => e.categoria === 'ACADEMICO').length;
+        document.getElementById('sidebar-cultural').innerText = eventosMes.filter(e => e.categoria === 'CULTURAL').length;
+        document.getElementById('sidebar-deportivo').innerText = eventosMes.filter(e => e.categoria === 'DEPORTIVO').length;
+        document.getElementById('sidebar-otros').innerText = eventosMes.filter(e => e.categoria !== 'ACADEMICO' && e.categoria !== 'CULTURAL' && e.categoria !== 'DEPORTIVO').length;
+    }
+
+    function abrirDetalle(t, h, l, d, c) {
+        document.getElementById('m-title').innerText = t;
+        document.getElementById('m-time').innerText = h + " hrs";
+        document.getElementById('m-place').innerText = l;
+        document.getElementById('m-desc').innerText = d;
+        document.getElementById('m-color').style.backgroundColor = c;
+        new bootstrap.Modal(document.getElementById('eventModal')).show();
+    }
+
+    function cambiarMes(n) { navDate.setMonth(navDate.getMonth() + n); render(); }
+    render();
+</script>
+{% endblock %}
