@@ -1,6 +1,6 @@
 import io
 import json
-from datetime import datetime
+from datetime import  datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -297,37 +297,63 @@ def notas_view(request):
 def asistencias_view(request):
     if not request.user.is_authenticated and not request.session.get('es_invitado'):
         return redirect('login')
+        
     es_invitado = not request.user.is_authenticated
     asistencias_a_mostrar = FAKE_ASISTENCIAS.copy()
     estudiante = None
     error_msg = None
     son_datos_falsos = True
 
+    stats = {
+        'presentes': 142,
+        'tardanzas': 5,
+        'faltas': 3,
+        'porcentaje': 96.6
+    }
+
     if request.method == 'POST':
         dni_manual = request.POST.get('documento')
         nombre_manual = request.POST.get('nombre')
+        
         if dni_manual and nombre_manual:
             if es_invitado or not request.user.is_authenticated:
-                error_msg = " Debes registrarte como padre para consultar asistencias reales."
+                error_msg = "Debes registrarte como padre para consultar asistencias reales."
                 asistencias_a_mostrar = FAKE_ASISTENCIAS
                 son_datos_falsos = True
             else:
                 try:
                     estudiante_encontrado = Estudiante.objects.get(dni=dni_manual)
                     nombre_completo = f"{estudiante_encontrado.nombres} {estudiante_encontrado.apellidos}".lower()
+                    
                     if nombre_manual.lower() in nombre_completo:
                         estudiante = estudiante_encontrado
                         asistencias_reales = Asistencia.objects.filter(estudiante=estudiante).order_by('-fecha')
+                        
                         if asistencias_reales.exists():
                             asistencias_a_mostrar = [
                                 {'fecha': a.fecha.strftime('%d/%m/%Y'), 'estado': a.get_estado_display()}
                                 for a in asistencias_reales
                             ]
                             son_datos_falsos = False
+                            presentes = asistencias_reales.filter(estado='PRESENTE').count()
+                            tardanzas = asistencias_reales.filter(estado='TARDANZA').count()
+                            faltas = asistencias_reales.filter(estado='FALTA').count()
+                            total_dias = presentes + tardanzas + faltas
+                            
+                            porcentaje = 100.0 if total_dias == 0 else round(((presentes + tardanzas) / total_dias) * 100, 1)
+                            
+                            stats = {
+                                'presentes': presentes,
+                                'tardanzas': tardanzas,
+                                'faltas': faltas,
+                                'porcentaje': porcentaje
+                            }
+                            
                         else:
                             asistencias_a_mostrar = []
                             son_datos_falsos = False
                             error_msg = "No hay registros de asistencia para esta estudiante."
+                            stats = {'presentes': 0, 'tardanzas': 0, 'faltas': 0, 'porcentaje': 0.0}
                     else:
                         asistencias_a_mostrar = FAKE_ASISTENCIAS
                         son_datos_falsos = True
@@ -336,12 +362,14 @@ def asistencias_view(request):
                     asistencias_a_mostrar = FAKE_ASISTENCIAS
                     son_datos_falsos = True
                     error_msg = "DNI no encontrado."
+
     return render(request, 'academico/asistencias.html', {
         'asistencias': asistencias_a_mostrar,
         'es_invitado': es_invitado,
         'error': error_msg,
         'son_datos_falsos': son_datos_falsos,
         'estudiante': estudiante,
+        'stats': stats,  
     })
 
 def comunicados_view(request):
@@ -370,9 +398,21 @@ def comunicados_view(request):
 def actividades_view(request):
     if not request.user.is_authenticated and not request.session.get('es_invitado'):
         return redirect('login')
-    actividades = Actividad.objects.all().order_by('fecha_actividad')
-    return render(request, 'academico/actividades.html', {'actividades': actividades})
+    hoy = timezone.now().date()
+    hace_15_dias = hoy - timedelta(days=15)
+    proximos_eventos = Actividad.objects.filter(
+        fecha_actividad__date__gte=hoy
+    ).order_by('fecha_actividad')
 
+    eventos_recientes = Actividad.objects.filter(
+        fecha_actividad__date__gte=hace_15_dias,
+        fecha_actividad__date__lt=hoy
+    ).order_by('-fecha_actividad')
+
+    return render(request, 'academico/actividades.html', {
+        'proximos_eventos': proximos_eventos,
+        'eventos_recientes': eventos_recientes
+    })
 
 def panel_invitado_calendario(request):
     actividades = Actividad.objects.filter(
@@ -385,22 +425,27 @@ def inventario_view(request):
         return redirect('login')
 
     equipos = Equipo.objects.filter(eliminado=False)
+    
     q = request.GET.get('q', '')
     estado = request.GET.get('estado', '')
+    categoria = request.GET.get('categoria', '')
 
     if q:
         equipos = equipos.filter(
-            Q(serie__icontains=q) |
-            Q(marca__icontains=q) |
-            Q(modelo__icontains=q)
+            Q(serie__icontains=q) | Q(marca__icontains=q) | Q(modelo__icontains=q)
         )
     if estado:
         equipos = equipos.filter(estado=estado)
+    if categoria:
+        equipos = equipos.filter(categoria=categoria)
 
     return render(request, 'inventario.html', {
         'equipos': equipos,
         'q': q,
         'estado_actual': estado,
+        'categoria_actual': categoria,
+        'categorias': Equipo.CATEGORIAS,
+        'estados': Equipo.ESTADOS,
     })
 
 def reportes_view(request):
@@ -567,6 +612,18 @@ def exportar_pdf(queryset):
     buffer.seek(0)
     return HttpResponse(buffer, content_type='application/pdf')
 
+
+
+def detalle_equipo_view(request, pk):
+    equipo = get_object_or_404(Equipo, pk=pk, eliminado=False)
+    historial = equipo.historial.all().order_by('-fecha_entrega')
+    ultima_asignacion = historial.filter(fecha_devolucion_real__isnull=True).first()
+    context = {
+        'equipo': equipo,
+        'historial': historial,
+        'ultima_asignacion': ultima_asignacion,
+    }
+    return render(request, 'detalle_equipo.html', context)
 def nivel_academico(request):
     if not request.user.is_authenticated and not request.session.get('es_invitado'):
         return redirect('login')

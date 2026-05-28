@@ -13,7 +13,6 @@ import os
 import dj_database_url
 
 from pathlib import Path
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'inventario',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -126,3 +126,102 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/'
+
+# settings.py
+
+JAZZMIN_SETTINGS = {
+    # Título del sitio
+    "site_title": "I.E. Juana Cervantes",
+    "site_header": "Juana Cervantes",
+    "site_brand": "I.E. Juana Cervantes",
+    "welcome_sign": "Bienvenido al Panel de Gestión",
+    "copyright": "I.E. Juana Cervantes",
+
+    # Logo (pon tu imagen en static/logo.png o la ruta que tengas)
+    "site_logo": "inventario/logo.jpg",   # <-- cambia por tu ruta real
+    "site_logo_classes": "img-circle",     # opcional
+
+    # Colores
+    "primary_color": "#0f172a",    # azul muy oscuro para el sidebar
+    "accent": "#1e40af",           # azul más claro para acentos
+    "theme": "flatly",             # tema claro
+
+    # Sidebar
+    "sidebar": "sidebar-light-primary",
+    "sidebar_fixed": True,
+
+    # Menú personalizado (agrupa tus modelos como quieras)
+    "navigation": [
+        {
+            "app": "auth",
+            "label": "Autenticación y autorización",
+            "icon": "fas fa-lock",
+            "models": [
+                {"model": "auth.User", "label": "Usuarios", "icon": "fas fa-users"},
+                {"model": "auth.Group", "label": "Grupos", "icon": "fas fa-users-cog"},
+            ]
+        },
+        {
+            "app": "inventario",
+            "label": "Portal Institucional",
+            "icon": "fas fa-school",
+            "models": [
+                {"model": "inventario.Equipo", "label": "Equipos", "icon": "fas fa-laptop"},
+                {"model": "inventario.Designacion", "label": "Designaciones", "icon": "fas fa-exchange-alt"},
+                {"model": "inventario.Estudiante", "label": "Estudiantes", "icon": "fas fa-user-graduate"},
+                {"model": "inventario.Nota", "label": "Notas", "icon": "fas fa-chart-line"},
+                {"model": "inventario.Asistencia", "label": "Asistencias", "icon": "fas fa-calendar-check"},
+                {"model": "inventario.Comunicado", "label": "Comunicados", "icon": "fas fa-bullhorn"},
+                {"model": "inventario.Actividad", "label": "Actividades", "icon": "fas fa-calendar-alt"},
+                {"model": "inventario.Perfil", "label": "Perfiles", "icon": "fas fa-id-card"},
+            ]
+        },
+    ],
+
+    # Ocultar apps o modelos que no quieras ver (opcional)
+    "hide_apps": [],
+    "hide_models": [],
+
+    # Iconos por defecto
+    "icons": {
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+
+    # CSS personalizado (crearemos el archivo)
+    "custom_css": "css/admin_custom.css",
+    "site_logo": "inventario/logo.jpg",
+    "show_ui_builder": False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-white navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-light-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "flatly",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
+}

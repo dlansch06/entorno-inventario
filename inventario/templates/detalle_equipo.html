@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Botón volver (ajusta el nombre de la URL si es necesario) -->
+    <div class="mb-4">
+        <a href="{% url 'inventario' %}" class="btn btn-outline-secondary">
+            ← Volver al inventario
+        </a>
+    </div>
+
+    <!-- Cabecera con imagen real y datos principales -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-body p-0">
+                    {% comment %}
+                        Generamos una imagen real desde Unsplash usando marca y modelo.
+                        El parámetro 'featured' devuelve fotos relacionadas.
+                        Si no carga, hay una imagen de respaldo (placeholder).
+                    {% endcomment %}
+                    <img src="https://source.unsplash.com/featured/600x400/?{{ equipo.marca }},{{ equipo.modelo }},laptop,computer"
+                         alt="{{ equipo.marca }} {{ equipo.modelo }}"
+                         class="img-fluid w-100"
+                         style="height: 280px; object-fit: cover;"
+                         onerror="this.onerror=null; this.src='https://picsum.photos/id/0/600/400';">
+                </div>
+                <div class="card-footer bg-white border-0 text-center py-3">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                        <i class="fas fa-barcode me-1"></i> Serie: {{ equipo.serie }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7 col-lg-8">
+            <div class="h-100 d-flex flex-column justify-content-center">
+                <h1 class="display-6 fw-bold">{{ equipo.get_categoria_display }}</h1>
+                <h2 class="text-muted fs-3 mb-3">{{ equipo.marca|capfirst }} {{ equipo.modelo }}</h2>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge bg-success rounded-pill px-3 py-2">
+                        <i class="fas fa-check-circle me-1"></i> {{ equipo.get_estado_display }}
+                    </span>
+                    <span class="badge bg-secondary bg-opacity-10 text-dark rounded-pill px-3 py-2">
+                        <i class="fas fa-calendar-alt me-1"></i> Ingreso: {{ equipo.fecha_ingreso_colegio|date:"d/m/Y" }}
+                    </span>
+                </div>
+                <p class="text-secondary">
+                    <i class="fas fa-map-marker-alt me-2 text-primary"></i> 
+                    Ubicación actual: <strong>{{ equipo.aula_actual|default:"Sin asignar" }}</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 mb-5">
+        <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
+            <h3 class="h5 fw-semibold">
+                <i class="fas fa-exchange-alt text-primary me-2"></i> Asignación Actual
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if ultima_asignacion %}
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <div class="text-secondary small">ESTADO</div>
+                        <div><span class="badge bg-warning text-dark">En uso</span></div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div class="text-secondary small">UBICACIÓN</div>
+                        <div class="fw-semibold">{{ ultima_asignacion.aula_destino }}</div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div class="text-secondary small">RESPONSABLE</div>
+                        <div class="fw-semibold">{{ ultima_asignacion.persona_responsable }}</div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div class="text-secondary small">FECHA DE ASIGNACIÓN</div>
+                        <div class="fw-semibold">{{ ultima_asignacion.fecha_entrega|date:"d/m/Y" }}</div>
+                    </div>
+                </div>
+                <div class="mt-2 p-3 bg-light rounded-3">
+                    <div class="text-secondary small">OBSERVACIONES</div>
+                    <p class="mb-0">Equipo asignado para uso en clases / proyectos.</p>
+                </div>
+            {% else %}
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <i class="fas fa-circle-check fs-4 me-3"></i>
+                    <div>
+                        <strong>Disponible</strong><br>
+                        El equipo no tiene asignación activa. Puede ser solicitado.
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-sm-6">
+                        <div class="text-secondary small">UBICACIÓN</div>
+                        <div>{{ equipo.aula_actual|default:"Sin asignar" }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small">RESPONSABLE</div>
+                        <div>—</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 mb-5">
+        <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
+            <h3 class="h5 fw-semibold">
+                <i class="fas fa-microchip text-primary me-2"></i> Información del Equipo
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-sm-6 col-lg-4">
+                    <div class="text-secondary small">NÚMERO DE SERIE</div>
+                    <div class="fw-semibold font-monospace">{{ equipo.serie }}</div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="text-secondary small">MARCA</div>
+                    <div class="fw-semibold">{{ equipo.marca|capfirst }}</div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="text-secondary small">MODELO</div>
+                    <div class="fw-semibold">{{ equipo.modelo }}</div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="text-secondary small">TIPO / CATEGORÍA</div>
+                    <div class="fw-semibold">{{ equipo.get_categoria_display }}</div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="text-secondary small">FECHA DE REGISTRO</div>
+                    <div class="fw-semibold">{{ equipo.fecha_ingreso_colegio|date:"d/m/Y" }}</div>
+                </div>
+                <div class="col-sm-6 col-lg-4">
+                    <div class="text-secondary small">ESTADO ACTUAL</div>
+                    <div>
+                        {% if equipo.estado == 'DISPONIBLE' %}
+                            <span class="badge bg-success">Disponible</span>
+                        {% elif equipo.estado == 'EN_USO' %}
+                            <span class="badge bg-warning text-dark">En uso</span>
+                        {% elif equipo.estado == 'MANTENIMIENTO' %}
+                            <span class="badge bg-secondary">Mantenimiento</span>
+                        {% else %}
+                            <span class="badge bg-danger">Baja</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 mb-5">
+        <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
+            <h3 class="h5 fw-semibold">
+                <i class="fas fa-box-open text-primary me-2"></i> Accesorios Incluidos
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if equipo.accesorios %}
+                <ul class="list-group list-group-flush">
+                    {% for acc in equipo.accesorios_lista %}
+                        <li class="list-group-item bg-transparent px-0">
+                            <i class="fas fa-check-circle text-success me-2"></i> {{ acc }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="text-secondary fst-italic">
+                    <i class="fas fa-info-circle me-1"></i> No se han registrado accesorios para este equipo.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
+            <h3 class="h5 fw-semibold">
+                <i class="fas fa-history text-primary me-2"></i> Historial de Asignaciones
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if historial %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Asignado a</th>
+                                <th>Responsable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for asignacion in historial %}
+                            <tr>
+                                <td>{{ asignacion.fecha_entrega|date:"d/m/Y" }}</td>
+                                <td>
+                                    {% if asignacion.fecha_devolucion_real %}
+                                        <span class="badge bg-secondary">Devolución</span>
+                                    {% else %}
+                                        <span class="badge bg-primary">Asignación</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ asignacion.aula_destino }}</td>
+                                <td>{{ asignacion.persona_responsable }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-light text-center py-4">
+                    <i class="fas fa-database fs-3 text-muted mb-2 d-block"></i>
+                    No hay movimientos registrados para este equipo.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

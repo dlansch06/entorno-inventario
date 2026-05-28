@@ -7,8 +7,6 @@ body{
     margin:-25px;
 }
 
-/* HERO */
-
 .hero{
     padding:80px 60px;
     border-radius:0 0 40px 40px;
@@ -55,8 +53,6 @@ body{
     border-radius:20px;
 }
 
-/* SECTION */
-
 .section{
     padding:80px 40px;
 }
@@ -76,7 +72,6 @@ body{
     color:#64748b;
 }
 
-/* DASHBOARD CARDS */
 
 .dashboard-card{
     background:#fff;
@@ -99,7 +94,6 @@ body{
     color:#64748b;
 }
 
-/* ICON */
 
 .icon{
     width:70px;
@@ -112,7 +106,6 @@ body{
     margin-bottom:20px;
 }
 
-/* SCHOOL */
 
 .school-card{
     position:relative;
@@ -148,7 +141,6 @@ body{
     font-weight:800;
 }
 
-/* VIDEO SECTION */
 
 .video-section{
     border-radius:35px;
@@ -207,7 +199,6 @@ body{
     font-size:3rem;
 }
 
-/* RESPONSIVE */
 
 @media (max-width: 991.98px) {
     .sidebar.active {
@@ -216,7 +207,6 @@ body{
     }
 }
 
-/* Opcional: Si quieres que el botón funcione también en escritorio para esconderla */
 .sidebar.active {
     margin-left: calc(-1 * var(--sidebar-width));
 }

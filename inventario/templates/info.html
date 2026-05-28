@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block content %}
 <style>
-    /* VARIABLES DE COLOR INSTITUCIONAL */
     :root {
         --azul-profundo: #000d1a;
         --azul-institucional: #001a33;
@@ -11,12 +9,10 @@
         --blanco-suave: #f8fafc;
     }
 
-    /* FONDO GENERAL DEL SITIO */
     body {
         background-color: #f1f5f9;
     }
 
-    /* ESTILO TECNOLÓGICO PARA VALORES */
     .section-valores {
         background: radial-gradient(circle at center, var(--azul-institucional) 0%, var(--azul-profundo) 100%);
         padding: 100px 0;
@@ -25,7 +21,6 @@
         box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    /* LA FORMA "WAO" MEJORADA (Hexágono Estilizado) */
     .card-tech {
         background: rgba(255, 255, 255, 0.03);
         backdrop-filter: blur(10px);
@@ -45,8 +40,6 @@
         border-color: var(--neon-cyan);
         box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
     }
-
-    /* ICONOS CON EFECTO DE GLOW */
     .icon-wrap {
         font-size: 3.8rem;
         margin-bottom: 25px;
@@ -59,7 +52,6 @@
         transform: scale(1.1);
     }
 
-    /* COLORES SEGÚN IMAGEN REFERENCIAL */
     .val-solidaridad { color: #4d79ff; }
     .val-responsabilidad { color: #ffcc00; }
     .val-innovacion { color: #00f2ff; }
@@ -74,14 +66,12 @@
         text-transform: uppercase;
         font-size: 1.2rem;
     }
-
     .card-tech p {
         color: #94a3b8;
         font-size: 0.9rem;
         line-height: 1.7;
     }
 
-    /* TARJETAS DE CONTACTO (Efecto Glass) */
     .contact-card {
         transition: all 0.3s ease;
         border: none !important;
@@ -91,8 +81,6 @@
         transform: scale(1.03);
         box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
     }
-
-    /* DECORACIÓN DE TÍTULOS */
     .title-underline {
         width: 80px;
         height: 4px;
@@ -101,7 +89,6 @@
         border-radius: 2px;
     }
 </style>
-
 <div class="container-fluid p-4">
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb small">
@@ -109,7 +96,6 @@
             <li class="breadcrumb-item active text-muted">Portal Institucional</li>
         </ol>
     </nav>
-
     <div class="card border-0 rounded-5 shadow-lg overflow-hidden bg-white mb-5">
         <div class="row g-0 align-items-center">
             <div class="col-lg-7 p-5">

@@ -11,6 +11,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            background-color: #f8fafc;
+        }
+        .card-global{
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            background-color: #ffffff;
+            padding: 1.25rem;
+        }
+        @media (min-width: 768px) {
+            .card-global {
+                padding: 1rem;
+            }
+        }
         :root {
             --sidebar-bg: #111827; /* Azul oscuro profundo (Tailwind Gray 900) */
             --sidebar-hover: #1f2937;
@@ -26,7 +43,6 @@
             overflow-x: hidden;
         }
 
-        /* --- SIDEBAR --- */
         .sidebar { 
             width: var(--sidebar-width); 
             height: 100vh; 
@@ -45,7 +61,6 @@
             text-align: center;
         }
 
-        /* Contenedor del Logo Mejorado */
         .logo-container {
             width: 85px;
             height: 85px;
@@ -114,8 +129,6 @@
             margin: 1.5rem 0 0.75rem 1.2rem;
             font-weight: 700;
         }
-
-        /* --- BOTÓN SALIR --- */
         .sidebar-footer {
             padding: 1.5rem;
             margin-top: auto;
@@ -136,7 +149,6 @@
             transform: translateY(-2px);
         }
 
-        /* --- RESPONSIVIDAD --- */
         @media (max-width: 991.98px) {
             .sidebar { left: calc(-1 * var(--sidebar-width)); }
             .sidebar.active { left: 0; }
@@ -217,7 +229,6 @@
                             <i class="bi bi-bank"></i> Acerca del colegio
                         </a>    
                     </li>
-                    
 
                     <li><div class="nav-section-title">ACADÉMICO</div></li>
                     <li class="nav-item">
@@ -277,17 +288,14 @@
         const btnToggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-
         function toggleMenu() {
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
         }
-
         if(btnToggle) {
             btnToggle.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
         }
-
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 992) {
                 sidebar.classList.remove('active');

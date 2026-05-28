@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import re
 
-
 class Perfil(models.Model):
     ROLES = [
         ('ADMIN', 'Administrador General'),
@@ -15,7 +14,6 @@ class Perfil(models.Model):
         ('PADRE', 'Padre de Familia'),
     ]
     NIVELES = [('SEC', 'Secundaria')]   
-
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
     rol = models.CharField(max_length=20, choices=ROLES, default='PADRE')
     esta_aprobado = models.BooleanField(default=False) 
@@ -30,7 +28,6 @@ class Perfil(models.Model):
     def clean(self):
         if self.seccion_asignada and not re.match(r'^[A-F]$', self.seccion_asignada):
             raise ValidationError({'seccion_asignada': 'La sección debe ser una letra mayúscula entre A y F.'})
-
     def save(self, *args, **kwargs):
         self.full_clean()  
         super().save(*args, **kwargs)
@@ -43,7 +40,6 @@ class Perfil(models.Model):
 class EquipoManager(models.Manager):
     def activos(self):
         return self.filter(eliminado=False)
-
 
 class Equipo(models.Model):
     CATEGORIAS = [
@@ -72,7 +68,6 @@ class Equipo(models.Model):
 
     def __str__(self):
         return f"[{self.get_categoria_display()}] {self.serie}"
-
 
 class Designacion(models.Model):
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, related_name='historial')
@@ -186,7 +181,6 @@ class Actividad(models.Model):
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField()
     fecha_actividad = models.DateTimeField()
-    
     tipo = models.CharField(
         max_length=10, 
         choices=TIPOS, 
