@@ -25,18 +25,22 @@ body {
     max-width: 550px;
     box-shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.37);
     transition: all 0.3s ease;
+    text-align: center;
 }
 
 .logo {
-    width: 200px;
-    height: 2000px;
-    object-fit: cover;
+    width: 240px;         
+    height: 240px;        
+    object-fit: contain;  
     background: white;
     border-radius: 50%;
     padding: 10px;
     margin-bottom: 20px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     border: 3px solid #ffc107;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .institution-title {
@@ -56,6 +60,9 @@ body {
 .input-icon {
     position: relative;
     margin-bottom: 18px;
+    max-width: 400px;     
+    margin-left: auto;    
+    margin-right: auto;   
 }
 
 .input-icon i {
@@ -94,6 +101,10 @@ body {
     width: 100%;
     color: white;
     transition: 0.3s;
+    max-width: 400px;     
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .btn-primary-custom:hover {
@@ -110,6 +121,10 @@ body {
     width: 100%;
     color: #212529;
     transition: 0.3s;
+    max-width: 400px;     
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .btn-warning-custom:hover {
@@ -126,6 +141,9 @@ body {
     width: 100%;
     color: white;
     transition: 0.3s;
+    max-width: 400px;    
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .btn-outline-guest:hover {
@@ -160,9 +178,10 @@ body {
     display: flex;
     align-items: center;
     text-align: center;
-    margin: 25px 0 20px;
+    margin: 25px auto 20px; 
     color: rgba(255,255,255,0.5);
     font-size: 0.8rem;
+    max-width: 400px;       
 }
 
 .divider::before,
@@ -189,6 +208,9 @@ body {
     padding: 10px 15px;
     margin-bottom: 20px;
     text-align: left;
+    max-width: 400px;     
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .alert-success-custom {
@@ -209,8 +231,8 @@ body {
         padding: 30px 20px;
     }
     .logo {
-        width: 100px;
-        height: 100px;
+        width: 130px;     
+        height: 130px;    
     }
     .institution-title {
         font-size: 1.3rem;
