@@ -150,13 +150,11 @@ class Comunicado(models.Model):
     titulo = models.CharField(max_length=200)
     contenido = models.TextField()
     
-    tipo = models.CharField(
-        max_length=20, 
-        choices=TIPO_CHOICES, 
-        default='GENERAL'
-    )
-    
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='GENERAL')
     es_general = models.BooleanField(default=False)
+    
+    grado = models.CharField(max_length=10, blank=True, null=True)
+    seccion = models.CharField(max_length=1, blank=True, null=True)
     
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
     autor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

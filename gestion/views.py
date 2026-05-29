@@ -145,7 +145,7 @@ def login_view(request):
                 messages.success(request, "¡Registro exitoso! Bienvenido al sistema.")
                 if next_url:
                     return redirect(next_url)
-                return redirect('notas')
+                return redirect('dashboard')  # ← Cambiado de 'notas' a 'dashboard'
             else:
                 messages.error(request, "Error al iniciar sesión automáticamente. Intenta manualmente.")
                 return redirect('login')
@@ -388,9 +388,17 @@ def comunicados_view(request):
     esta_autenticado = request.user.is_authenticated
 
     if esta_autenticado and hasattr(request.user, 'perfil') and request.user.perfil.rol == 'PADRE' and request.user.perfil.esta_aprobado:
-        comunicados = Comunicado.objects.all().order_by('-fecha_publicacion')
+        try:
+            estudiante = Estudiante.objects.get(dni=request.user.perfil.dni_hija)
+            comunicados = Comunicado.objects.filter(
+                Q(es_general=True) |
+                Q(tipo='AULA', grado=estudiante.grado, seccion=estudiante.seccion)
+            ).order_by('-fecha_publicacion')
+        except Estudiante.DoesNotExist:
+            comunicados = Comunicado.objects.filter(es_general=True).order_by('-fecha_publicacion')
         user_aprobado = True
     elif esta_autenticado:
+        # Personal (director, secretaria, docente) ve todos
         comunicados = Comunicado.objects.all().order_by('-fecha_publicacion')
         user_aprobado = True
     else:

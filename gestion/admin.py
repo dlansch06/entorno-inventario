@@ -206,9 +206,18 @@ class AsistenciaAdmin(ModelAdmin):
 
 @admin.register(Comunicado)
 class ComunicadoAdmin(ModelAdmin):
-    list_display = ('titulo', 'autor', 'es_general', 'fecha_publicacion')
-    list_filter = ('es_general', 'fecha_publicacion')
+    list_display = ('titulo', 'autor', 'tipo', 'grado', 'seccion', 'es_general', 'fecha_publicacion')
+    list_filter = ('tipo', 'es_general', 'grado', 'seccion')
     search_fields = ('titulo', 'contenido')
+    fieldsets = (
+        (None, {
+            'fields': ('titulo', 'contenido', 'tipo', 'es_general', 'autor')
+        }),
+        ('Datos de aula (solo si tipo es AULA o ATENCION)', {
+            'fields': ('grado', 'seccion'),
+            'classes': ('collapse',)
+        }),
+    )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
