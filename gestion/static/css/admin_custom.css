@@ -1,9 +1,5 @@
-/* ======================================================
-   FUENTE
-====================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root{
     --primary:#2563eb;
     --primary-light:#3b82f6;
@@ -15,9 +11,7 @@
     --card:#ffffff;
 }
 
-/* ======================================================
-   GENERAL
-====================================================== */
+
 
 body{
     font-family:'Inter',sans-serif!important;
@@ -28,9 +22,7 @@ body{
     background:transparent!important;
 }
 
-/* ======================================================
-   NAVBAR SUPERIOR
-====================================================== */
+
 
 .main-header{
     background:white!important;
@@ -42,9 +34,6 @@ body{
     color:#334155!important;
 }
 
-/* ======================================================
-   SIDEBAR
-====================================================== */
 
 .main-sidebar{
     background:
@@ -53,7 +42,7 @@ body{
             rgba(2,6,23,.97),
             rgba(5,23,64,.96)
         ),
-        url('/static/inventario/sidebar-school.jpg');
+        url('/static/img/logo.jpg');
 
     background-size:cover;
     background-position:center;
@@ -63,9 +52,7 @@ body{
         4px 0 25px rgba(0,0,0,.15);
 }
 
-/* ======================================================
-   LOGO
-====================================================== */
+
 
 .brand-link{
     border:none!important;
@@ -102,9 +89,6 @@ body{
     letter-spacing:.5px;
 }
 
-/* ======================================================
-   USER PANEL
-====================================================== */
 
 .user-panel{
     border:none!important;
@@ -117,9 +101,7 @@ body{
     font-weight:600;
 }
 
-/* ======================================================
-   MENU
-====================================================== */
+
 
 .nav-sidebar{
     margin-top:25px;
@@ -151,8 +133,6 @@ body{
     font-weight:500;
 }
 
-/* HOVER */
-
 .nav-sidebar .nav-link:hover{
 
     background:
@@ -161,15 +141,11 @@ body{
             rgba(59,130,246,.25),
             rgba(37,99,235,.18)
         )!important;
-
     backdrop-filter:blur(12px);
-
     transform:translateX(4px);
 
     color:white!important;
 }
-
-/* ACTIVO */
 
 .nav-sidebar .nav-link.active{
 
@@ -193,16 +169,12 @@ body{
     margin-right:10px!important;
 }
 
-/* ======================================================
-   CONTENIDO
-====================================================== */
 
 .content-wrapper{
     background:#f5f7fb!important;
     padding:18px!important;
 }
 
-/* TITULO */
 
 .content-header h1{
     font-size:42px!important;
@@ -210,25 +182,17 @@ body{
     color:#0f172a!important;
 }
 
-/* ======================================================
-   CARDS
-====================================================== */
 
 .card{
 
     background:white!important;
-
     border:none!important;
-
     border-radius:24px!important;
-
     overflow:hidden;
-
     box-shadow:
         0 10px 30px rgba(15,23,42,.06)!important;
 }
 
-/* HEADER */
 
 .card-header{
     background:white!important;
@@ -244,9 +208,7 @@ body{
     color:#0f172a!important;
 }
 
-/* ======================================================
-   TABLAS
-====================================================== */
+
 
 .table{
 
@@ -254,7 +216,7 @@ body{
     border-spacing:0 12px!important;
 }
 
-/* HEADER TABLA */
+
 
 .table thead th{
 
@@ -271,7 +233,6 @@ body{
     letter-spacing:1px;
 }
 
-/* FILAS */
 
 .table tbody tr{
 
@@ -294,22 +255,13 @@ body{
     vertical-align:middle!important;
 }
 
-/* ======================================================
-   BOTONES
-====================================================== */
-
 .btn{
 
     border:none!important;
-
     border-radius:14px!important;
-
     font-weight:600!important;
-
     padding:12px 18px!important;
 }
-
-/* PRIMARY */
 
 .btn-primary{
 
@@ -324,10 +276,7 @@ body{
         0 10px 20px rgba(37,99,235,.25);
 }
 
-/* SUCCESS */
-
 .btn-success{
-
     background:
         linear-gradient(
             90deg,
@@ -336,70 +285,43 @@ body{
         )!important;
 }
 
-/* ======================================================
-   INPUTS
-====================================================== */
 
 .form-control,
 .select2-selection{
 
     border-radius:14px!important;
-
     border:1px solid #dbe3ee!important;
-
     min-height:50px!important;
-
     box-shadow:none!important;
 }
 
-/* ======================================================
-   BREADCRUMB
-====================================================== */
 
 .breadcrumb{
     background:transparent!important;
 }
 
-/* ======================================================
-   WATERMARK LOGO
-====================================================== */
-
 .content-wrapper::before{
-
     content:"";
-
     position:fixed;
-
     width:500px;
     height:500px;
-
     right:8%;
     top:25%;
-
     background:
-        url('/static/inventario/logo.png');
+        url('/static/img/logo.jpg');
 
     background-repeat:no-repeat;
     background-position:center;
     background-size:contain;
-
     opacity:.04;
-
     pointer-events:none;
-
     z-index:0;
 }
 
-/* ======================================================
-   RESPONSIVE
-====================================================== */
-
 @media(max-width:768px){
-
     .brand-text{
         font-size:16px!important;
     }
-
     .content-header h1{
         font-size:30px!important;
     }
@@ -411,7 +333,6 @@ body{
     background: #f4f7fb !important;
 }
 
-/* MODULES */
 
 .module,
 .card,
@@ -419,116 +340,78 @@ body{
 #changelist,
 .results,
 #content-main {
-
     background: white !important;
-
     border-radius: 24px !important;
-
     border: none !important;
-
     box-shadow:
         0 10px 25px rgba(15,23,42,.06) !important;
 
     overflow: hidden !important;
 }
 
-/* TABLAS */
 
 #result_list {
-
     border-collapse: separate !important;
-
     border-spacing: 0 12px !important;
-
     background: transparent !important;
 }
 
-/* HEADERS TABLA */
 
 #result_list thead th {
-
     background: #f8fafc !important;
-
     color: #64748b !important;
-
     border: none !important;
-
     text-transform: uppercase !important;
-
     font-size: 12px !important;
-
     letter-spacing: 1px !important;
 
     padding: 18px !important;
 }
 
-/* FILAS */
 
 #result_list tbody tr {
-
     background: white !important;
-
     box-shadow:
         0 4px 12px rgba(0,0,0,.05) !important;
-
     border-radius: 18px !important;
 }
 
-/* CELDAS */
 
 #result_list tbody td {
-
     border-top: none !important;
-
     padding: 18px !important;
-
     vertical-align: middle !important;
 }
 
-/* LINKS TABLA */
 
 #result_list tbody td a {
-
     color: #0f172a !important;
-
     font-weight: 600 !important;
 }
 
-/* FORMULARIOS */
 
 .change-form .card,
 .inline-group {
-
     border-radius: 24px !important;
-
     overflow: hidden !important;
-
     border: none !important;
-
     box-shadow:
         0 10px 30px rgba(0,0,0,.05) !important;
 }
 
-/* INPUTS */
 
 input,
 textarea,
 select,
 .form-control,
 .select2-selection {
-
     border-radius: 14px !important;
-
     border: 1px solid #dbe3ee !important;
-
     min-height: 50px !important;
-
     box-shadow: none !important;
 
     background: white !important;
 }
-
-/* FOCUS */
 
 input:focus,
 textarea:focus,
@@ -540,32 +423,25 @@ select:focus {
         0 0 0 4px rgba(37,99,235,.15) !important;
 }
 
-/* BOTONES */
-
 .btn,
 button,
 input[type=submit],
 .submit-row input {
-
     border-radius: 14px !important;
-
     border: none !important;
-
     padding: 12px 20px !important;
 
     font-weight: 600 !important;
 }
 
-/* PRIMARY */
 
 .btn-primary,
 .default,
 input[type=submit].default {
-
     background:
         linear-gradient(
             90deg,
-            #2563eb,
+            #04082b,
             #3b82f6
         ) !important;
 
@@ -587,7 +463,6 @@ input[type=submit].default {
         ) !important;
 }
 
-/* SIDEBAR */
 
 .main-sidebar {
 
@@ -597,30 +472,18 @@ input[type=submit].default {
             rgba(2,6,23,.95),
             rgba(5,23,64,.97)
         ),
-        url('/static/inventario/sidebar-school.jpg') !important;
-
+        url('/static/img/sidebar-school.jpg') !important;
     background-size: cover !important;
-
     background-position: center !important;
 }
-
-/* MENU */
-
 .nav-sidebar .nav-link {
-
     border-radius: 16px !important;
-
     margin: 6px 12px !important;
-
     padding: 14px 18px !important;
-
     transition: .25s !important;
 }
 
-/* ACTIVO */
-
 .nav-sidebar .nav-link.active {
-
     background:
         linear-gradient(
             90deg,
@@ -632,45 +495,25 @@ input[type=submit].default {
         0 10px 25px rgba(37,99,235,.35) !important;
 }
 
-/* HOVER */
-
 .nav-sidebar .nav-link:hover {
-
     background:
         rgba(255,255,255,.12) !important;
-
     transform:
         translateX(4px);
 }
-
-/* WATERMARK */
-
 .content-wrapper::before {
-
     content: "";
-
     position: fixed;
-
     width: 550px;
-
     height: 550px;
-
     right: 5%;
-
     top: 18%;
-
     background:
-        url('/static/inventario/logo.png') !important;
-
+        url('/static/img/logo.jpg') !important;
     background-repeat: no-repeat !important;
-
     background-position: center !important;
-
     background-size: contain !important;
-
     opacity: .035 !important;
-
     pointer-events: none;
-
     z-index: 0;
 }

@@ -19,7 +19,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.shortcuts import redirect
-from inventario import views 
+from gestion import views 
 
 urlpatterns = [
     
@@ -34,9 +34,8 @@ urlpatterns = [
     path('consulta-actividades/', views.actividades_view, name='actividades'),
     path('comunicados/', views.comunicados_view, name='comunicados'),
     path('niveles-educativos/', views.nivel_academico, name='niveles'),
-    path('api/procesar-acceso-padre/', views.procesar_acceso_padre_view, name='procesar_acceso_padre'),
 
-    path('registro-padre/', views.registro_padre_view, name='registro_padre'),
+    path('registro-padre/', views.registro_padre_form, name='registro_padre'),
     path('reportes/', views.reportes_view, name='reportes'),
     path('equipo/<int:pk>/', views.detalle_equipo_view, name='detalle_equipo'),
     path('equipos/', views.inventario_view, name='inventario'),

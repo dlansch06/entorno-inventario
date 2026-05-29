@@ -1,0 +1,227 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, 'Helvetica Neue', sans-serif;
+    background: radial-gradient(circle, #000766 0%, #000d1a 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 40px 35px;
+    width: 100%;
+    max-width: 550px;
+    box-shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all 0.3s ease;
+}
+
+.logo {
+    width: 200px;
+    height: 2000px;
+    object-fit: cover;
+    background: white;
+    border-radius: 50%;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border: 3px solid #ffc107;
+}
+
+.institution-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: rgb(255, 255, 255);
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+}
+
+.input-icon {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.input-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #003366;
+    z-index: 2;
+    font-size: 1.1rem;
+}
+
+.form-control-custom {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 15px 14px 45px;
+    width: 100%;
+    font-size: 1rem;
+    transition: 0.2s;
+    outline: none;
+}
+
+.form-control-custom:focus {
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255,193,7,0.4);
+}
+
+.btn-primary-custom {
+    background: #007bff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    width: 100%;
+    color: white;
+    transition: 0.3s;
+}
+
+.btn-primary-custom:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+.btn-warning-custom {
+    background: #ffc107;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-weight: 700;
+    width: 100%;
+    color: #212529;
+    transition: 0.3s;
+}
+
+.btn-warning-custom:hover {
+    background: #e0a800;
+    transform: translateY(-2px);
+}
+
+.btn-outline-guest {
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 700;
+    width: 100%;
+    color: white;
+    transition: 0.3s;
+}
+
+.btn-outline-guest:hover {
+    background: white;
+    color: #001a33;
+    transform: translateY(-2px);
+}
+
+.toggle-link {
+    color: #ffc107;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.toggle-link:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: white;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0 20px;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.divider::before {
+    margin-right: 12px;
+}
+
+.divider::after {
+    margin-left: 12px;
+}
+
+.alert-custom {
+    background: rgba(220, 53, 69, 0.9);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.85rem;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.alert-success-custom {
+    background: rgba(40, 167, 69, 0.9);
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+@media (max-width: 576px) {
+    .glass-card {
+        padding: 30px 20px;
+    }
+    .logo {
+        width: 100px;
+        height: 100px;
+    }
+    .institution-title {
+        font-size: 1.3rem;
+    }
+    .form-control-custom {
+        padding: 12px 15px 12px 40px;
+        font-size: 0.9rem;
+    }
+    .btn-primary-custom,
+    .btn-warning-custom,
+    .btn-outline-guest {
+        padding: 12px;
+    }
+}

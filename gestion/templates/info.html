@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    :root {
+        --azul-profundo: #000d1a;
+        --azul-institucional: #001a33;
+        --neon-cyan: #00f2ff;
+        --blanco-suave: #f8fafc;
+        --dorado: #ffc107;
+        --oscuro-resena: #1a1a1a; /* Fondo idéntico al de la imagen de la reseña */
+    }
+
+    body {
+        background-color: #f1f5f9;
+    }
+
+    /* Sección de valores mejorada y responsiva */
+    .valores-section {
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        padding: 60px 0;
+        border-radius: 40px 40px 0 0;
+        margin-top: 40px;
+    }
+    .valor-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 30px 20px;
+        text-align: center;
+        transition: all 0.4s ease;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        height: 100%;
+    }
+    .valor-card:hover {
+        transform: translateY(-10px);
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--dorado);
+        box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+    }
+    .valor-icon {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.1);
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        transition: all 0.3s;
+        color: white !important;
+    }
+    .valor-card:hover .valor-icon {
+        background: var(--dorado);
+        color: #0f172a !important;
+        transform: scale(1.05);
+    }
+    .valor-card h4 {
+        color: white;
+        font-weight: 700;
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+    .valor-card p {
+        color: #cbd5e1;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 0;
+    }
+    .title-underline {
+        width: 80px;
+        height: 4px;
+        background: var(--dorado);
+        margin: 15px auto;
+        border-radius: 2px;
+    }
+
+    /* Sección Historia fiel a tu imagen */
+    .historia-section {
+        background-color: var(--oscuro-resena);
+        border-radius: 24px;
+        box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+        padding: 30px;
+        margin: 40px 0;
+        color: #ffffff;
+    }
+    .historia-section h2 {
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        margin-bottom: 25px;
+        text-transform: uppercase;
+    }
+    .historia-section p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: #e2e8f0;
+        text-align: justify;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Mapa y Tarjetas de Contacto */
+    .mapa-container {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        height: 350px;
+    }
+    .contact-card {
+        transition: all 0.3s ease;
+        border: none !important;
+        background: var(--azul-institucional);
+        border-radius: 16px !important;
+        border-left: 5px solid var(--dorado) !important;
+    }
+    .contact-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<div class="container-fluid p-3 p-md-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none">Inicio</a></li>
+            <li class="breadcrumb-item active text-muted">Portal Institucional</li>
+        </ol>
+    </nav>
+
+    <!-- Tarjeta principal -->
+    <div class="card border-0 rounded-4 shadow-lg overflow-hidden bg-white mb-5">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-7 p-4 p-md-5">
+                <h6 class="text-primary fw-bold text-uppercase mb-2 tracking-widest">Tradición y Tecnología</h6>
+                <h1 class="fw-bold mb-4 display-5 text-dark">Colegio Nacional <br><span style="color: var(--azul-institucional)">Juana Cervantes</span></h1>
+                <p class="text-muted fs-5 lh-base">Emblema de Arequipa. Lideramos la formación integral de la mujer cervantina, uniendo la disciplina histórica con la innovación digital del siglo XXI.</p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="https://facebook.com/JuanaCervantesAQP" target="_blank" class="btn btn-dark rounded-pill px-4 py-2 shadow">
+                        <i class="bi bi-facebook me-2"></i> Comunidad
+                    </a>
+                    <a href="#historia" class="btn btn-outline-primary rounded-pill px-4 py-2">Nuestra Historia</a>
+                </div>
+            </div>
+            <div class="col-lg-5 position-relative">
+                <img src="{% static 'inventario/portada2.jpg' %}" class="img-fluid w-100" style="object-fit: cover; min-height: 350px; max-height: 450px;" alt="Fachada">
+                <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.7))">
+                    <p class="text-white small mb-0"><i class="bi bi-geo-alt me-2"></i>Arequipa, Perú - Malecón Vallecito</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Misión y Visión -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 border-start border-primary border-5">
+                <h4 class="fw-bold text-primary mb-3"><i class="bi bi-rocket-takeoff me-2"></i>Misión</h4>
+                <p class="text-muted mb-0">“Ser una Institución de reconocido prestigio en la formación de señoritas competitivas, innovadoras, investigadoras, y productivas, con una sólida escala de valores, elevado compromiso social e identificadas con la preservación del medio ambiente”.</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 border-start border-info border-5">
+                <h4 class="fw-bold text-info mb-3"><i class="bi bi-eye me-2"></i>Visión</h4>
+                <p class="text-muted mb-0">Somos una Institución Educativa emblemática que brinda un servicio de calidad en el área científico humanista, contamos con un equipo de profesionales competentes y comprometidos con los propósitos institucionales, buscamos el desarrollo y la consolidación de capacidades en las estudiantes, mediante la aplicación de estrategias de metodología activa, orientadas a la consolidación de los aprendizajes fundamentales.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Valores con iconos nativos de Bootstrap -->
+<section class="valores-section">
+    <div class="container-fluid px-4">
+        <div class="text-center mb-5">
+            <h2 class="text-white fw-bold display-6">NÚCLEO DE VALORES</h2>
+            <div class="title-underline"></div>
+            <p class="text-info mt-3 fw-light tracking-widest">CULTURA INSTITUCIONAL DIGITAL</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="valor-card">
+                    <div class="valor-icon"><i class="bi bi-heart-fill text-danger"></i></div>
+                    <h4>Solidaridad</h4>
+                    <p>Fomentamos el apoyo mutuo y la colaboración en nuestra red educativa.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="valor-card">
+                    <div class="valor-icon"><i class="bi bi-shield-check text-success"></i></div>
+                    <h4>Responsabilidad</h4>
+                    <p>Compromiso ético con el deber y el uso responsable de recursos tecnológicos.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="valor-card">
+                    <div class="valor-icon"><i class="bi bi-cpu text-info"></i></div>
+                    <h4>Innovación</h4>
+                    <p>Dominio de nuevas tecnologías y pensamiento creativo disruptivo.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="valor-card">
+                    <div class="valor-icon"><i class="bi bi-people-fill text-primary"></i></div>
+                    <h4>Respeto</h4>
+                    <p>Valoramos la diversidad y la dignidad en nuestra comunidad.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="valor-card">
+                    <div class="valor-icon"><i class="bi bi-award-fill text-warning"></i></div>
+                    <h4>Excelencia</h4>
+                    <p>Búsqueda constante de la calidad en cada proceso académico.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="valor-card">
+                    <div class="valor-icon"><i class="bi bi-globe2 text-secondary"></i></div>
+                    <h4>Comunidad</h4>
+                    <p>Padres, docentes y alumnas conectados por un solo objetivo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sección de Historia (Fiel a la imagen adjunta) -->
+<div id="historia" class="container-fluid px-4">
+    <div class="historia-section">
+        <h2 class="mb-4">RESEÑA HISTÓRICA</h2>
+        <div class="row g-4">
+            <div class="col-md-4 text-center text-md-start">
+                <img src="{% static 'img/juanacerv.jpg' %}" alt="Juana Cervantes Pacheco de Bolognesi" class="img-fluid rounded-2 mb-3 shadow" style="border: 1px solid #333; max-width: 100%; height: auto;">
+            </div>
+            <div class="col-md-8">
+                <p>La Emblemática Institución Educativa “Juana Cervantes de Bolognesi” fue creada por Ley Nº 12875 en abril de 1958, gracias a las gestiones de un esforzado grupo de maestros y muy especialmente de la abnegada labor de la doctora Sra. Aurora Paredes Tello. Ella fue la primera Directora y gestora del mismo, su esposo General durante el primer gobierno del Presidente Arq. Fernando Belaunde Terry, colaboró ampliamente para que se construyera una moderna infraestructura a orillas del río Chili. Entre 1958 y 1968 maestros y estudiantes transitaron por los siguientes locales: en 1958 por unos meses en el barrio de San Lázaro y luego en la calle Rivero, desde 1959 hasta 1961 en el local de Radio Patrulla en Miraflores, en 1962 se instalaron en 02 locales uno en la última cuadra de la calle San Juan de Dios y el otro en la calle La Merced (actual I.E. Fortunata Gutiérrez de Bernedo en este local que fue un anexo funcionó hasta el año 1973), en el año 1965 maestros y estudiantes terminaron su etapa de inquilinos y se instalaron en las riberas del río Chili en donde el año 1968 se inauguró su infraestructura única y exclusiva para la Institución Educativa, es por eso el mencionado y famoso nombre de “Las Truchas”. El Presidente de la República Dr. Alan García Pérez Mediante Of. N° 7957-2010-DP/SPGR comunica que la I.E. Juana Cervantes de Bolognesi, ha sido considerada como “Institución Educativa Emblemática”, en reconocimiento a ser la primera institución educativa pública creada para educar a la mujer arequipeña y por su reconocido prestigio en la comunidad. Su aniversario se celebra el 12 de octubre de cada año.</p>
+                <p>La Institución Educativa lleva el nombre de la ilustre dama Arequipeña Doña Juana Cervantes de Bolognesi, como un merecido homenaje a la mujer y madre que inculcó valores, al extraordinario e inmolado héroe combatiente del Morro de Arica, Coronel Don Francisco Bolognesi Cervantes. Han transcurrido más de 50 años de fructífera labor educativa, logrando imponerse en la Ciudad Blanca de Arequipa, como una de las instituciones de mayor prestigio y excelencia educativa, gracias al esfuerzo de insignes maestros que pasaron por sus aulas y por el apoyo de sus Directoras (es) Sra. Aurora Paredes Tello, Corina de la Torre, Inés Manrique, Gladis Fuster, Rebeca Fernández de Merell, Beatriz Rodríguez Rosado, Olga Paredes de Núñez, Ligia Chiang Pino, Irma Gutiérrez de Palomino, Frida Bedregal de Tamayo, Nelly Palacios Meneses, Luzvenia Núñez Parra, Reynaldo Arenas Vilca (e) y (e), Prof. Elsa Cervantes Oviedo, y actualmente estamos trabajando como Director el profesor Juan Alfredo Sumari Coaquira para lograr ubicar a nuestra institución en un sitial de vanguardia: La mejor de Arequipa.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trayectoria, Información de Contacto y Mapa Corregido -->
+<div class="container-fluid px-4 py-4">
+    <div class="card border-0 rounded-4 shadow-sm p-4 p-md-5 bg-white mb-4">
+        <div class="mb-5">
+            <h3 class="fw-bold text-dark"><i class="bi bi-patch-check-fill me-2 text-primary"></i> Trayectoria e Identidad</h3>
+            <p class="text-muted">El Colegio Nacional <strong>Juana Cervantes</strong> es guardián de la historia arequipeña. Desde su fundación, ha sido el hogar de generaciones de mujeres que han marcado el rumbo de nuestra ciudad. Este <strong>Sistema de Gestión Institucional</strong> es el paso firme hacia el futuro, permitiendo que la administración de recursos sea tan impecable como nuestra historia.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Bloque de datos de contacto -->
+            <div class="col-lg-5">
+                <h3 class="fw-bold text-dark mb-4"><i class="bi bi-pin-map-fill me-2 text-warning"></i>Encuéntranos</h3>
+                <div class="d-flex flex-column gap-3">
+                    <!-- Dirección -->
+                    <div class="contact-card d-flex align-items-center p-3 text-white">
+                        <div class="bg-white rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; flex-shrink: 0;">
+                            <i class="bi bi-geo-alt-fill fs-5" style="color: var(--azul-institucional);"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-white">Dirección</h6>
+                            <small class="text-white-50">Malecón Vallecito s/n, Arequipa</small>
+                        </div>
+                    </div>
+                    <!-- Correo -->
+                    <div class="contact-card d-flex align-items-center p-3 text-white">
+                        <div class="bg-white rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; flex-shrink: 0;">
+                            <i class="bi bi-envelope-at-fill fs-5" style="color: var(--azul-institucional);"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-white">Correo</h6>
+                            <small class="text-white-50 text-break">juanacervantesbolognesi@gmail.com</small>
+                        </div>
+                    </div>
+                    <!-- Horario -->
+                    <div class="contact-card d-flex align-items-center p-3 text-white">
+                        <div class="bg-white rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; flex-shrink: 0;">
+                            <i class="bi bi-clock-history fs-5" style="color: var(--azul-institucional);"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-white">Horario</h6>
+                            <small class="text-white-50">Lun - Vie: 7:00 AM - 5:00 PM</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloque del Mapa Preciso (Ubicación real en Vallecito) -->
+            <div class="col-lg-7">
+                <div class="mapa-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3824.4764835695085!2d-71.54324202398604!3d-16.405725238466195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91424a5697669d67%3A0x289745d470dfd236!2sI.E.E.%20Juana%20Cervantes%20de%20Bolognesi!5e0!3m2!1ses-419!2spe!4v1715000000000!5m2!1ses-419!2spe" 
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <p class="text-muted small mt-2 text-center"><i class="bi bi-info-circle"></i> Ubicación exacta: Malecón Vallecito – A orillas del río Chili</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

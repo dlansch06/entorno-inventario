@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet"
+href="{% static 'img/estilos.css' %}">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<div class="dashboard">
+    <section class="hero">
+        <div class="container-fluid">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7">
+                    <span class="badge-school">
+                        INSTITUCIÓN EDUCATIVA PÚBLICA
+                    </span>
+                    <h1>
+                        Formando Mujeres Líderes del Mañana
+                    </h1>
+                    <p>
+                        Educación moderna enfocada en liderazgo,
+                        excelencia académica y desarrollo integral.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'info' %}" class="btn btn-outline-light btn-lg px-4 rounded-pill fw-bold">
+                            Conocer Más
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+
+                    <div class="video-box">
+                        <video autoplay muted loop controls playsinline>
+                            <source src="{% static 'img/video_portada.mp4' %}" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <h2>
+                Acceso Rápido
+            </h2>
+            <p>
+                Herramientas académicas para toda la comunidad educativa
+            </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+                    <div class="icon bg-primary-subtle text-primary">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <h4>Consulta de Notas</h4>
+                    <p>
+                        Revisa calificaciones académicos de tus hijos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+                    <div class="icon bg-success-subtle text-success">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                    <h4>Asistencias</h4>
+                    <p>
+                        Consulta asistencia y puntualidad estudiantil.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+                    <div class="icon bg-warning-subtle text-warning">
+                        <i class="bi bi-calendar-event-fill"></i>
+                    </div>
+                    <h4>Calendario Escolar</h4>
+                    <p>
+                        Actividades y eventos institucionales.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+
+                    <div class="icon bg-danger-subtle text-danger">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </div>
+                    <h4>Comunicados</h4>
+                    <p>
+                        Información importante para padres y estudiantes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="section pt-0">
+        <div class="section-header">
+            <h2>
+                Vida Escolar
+            </h2>
+            <p>
+                Experiencias que inspiran y fortalecen nuestra comunidad
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="school-card">
+                    <img loading="lazy"
+                    src="{% static 'img/deporte.jpg' %}">
+
+                    <div class="school-overlay">
+                        <h3>Deporte</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="school-card">
+                    <img loading="lazy"
+                    src="{% static 'img/talento.jpg' %}">
+
+                    <div class="school-overlay">
+                        <h3>Talentos</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="school-card">
+                    <img loading="lazy"
+                    src="{% static 'img/ceremonia.jpg' %}">
+
+                    <div class="school-overlay">
+                        <h3>Ceremonias</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="school-card">
+                    <img loading="lazy"
+                    src="{% static 'img/reconocimientos.jpg' %}">
+
+                    <div class="school-overlay">
+                        <h3>Reconocimientos</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section pt-0">
+        <div class="video-section">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-6 p-5">
+                    <h2>
+                        Nuestra Institución en Acción
+                    </h2>
+                    <p>
+                        Descubre cómo padres,madres docentes y personal administrativo trabajan juntos para brindar una educación de calidad y formar líderes del mañana.
+                    </p>
+                    <a href="https://web.facebook.com/reel/1212769843964689"
+                    target="_blank"
+                    class="btn btn-light btn-lg rounded-pill px-4">
+
+                        <i class="bi bi-play-fill me-2"></i>
+                        Ver Video Completo
+                    </a>
+                </div>
+
+                <div class="col-lg-6">
+                    <a href="https://web.facebook.com/reel/1212769843964689"
+                    target="_blank"
+                    class="video-preview">
+                        <img loading="lazy"
+                        src="{% static 'img/preview-video.png' %}">
+                        <div class="video-overlay">
+                            <div class="play-btn">
+                                <i class="bi bi-play-fill"></i>
+
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

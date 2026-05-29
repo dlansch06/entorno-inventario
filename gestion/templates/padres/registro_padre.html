@@ -1,0 +1,209 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Registro de Padre | I.E. Juana Cervantes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, 'Helvetica Neue', sans-serif;
+            background: radial-gradient(circle, #003366 0%, #000d1a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 28px 22px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease;
+        }
+        .logo {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            background: white;
+            border-radius: 50%;
+            padding: 6px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .institution-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: white;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+        }
+        .form-control-custom {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 15px;
+            width: 100%;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            outline: none;
+        }
+        .form-control-custom:focus {
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255,193,7,0.4);
+        }
+        .btn-registrar {
+            background: #ffc107;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            width: 100%;
+            color: #212529;
+            transition: 0.3s;
+        }
+        .btn-registrar:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+        .btn-volver {
+            background: transparent;
+            border: 1px solid white;
+            border-radius: 12px;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            width: 100%;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .btn-volver:hover {
+            background: white;
+            color: #003366;
+        }
+        .alert-custom {
+            background: rgba(220, 53, 69, 0.9);
+            border-radius: 12px;
+            color: white;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+        }
+        .alert-success-custom {
+            background: rgba(40, 167, 69, 0.9);
+        }
+        .label-white {
+            color: white;
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+            font-size: 0.85rem;
+        }
+        .small-text {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.65rem;
+            margin-top: 3px;
+        }
+        .divider {
+            margin: 20px 0 15px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        /* Responsive extra */
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 20px 16px;
+            }
+            .institution-title {
+                font-size: 1.2rem;
+            }
+            .form-control-custom {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="glass-card text-center">
+    <img src="{% static 'img/logo.jpg' %}" alt="Logo Colegio" class="logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/90?text=Logo';">
+    <div class="institution-title">REGISTRO DE PADRES</div>
+    <div class="subtitle">Active su cuenta para acceder a notas y comunicados</div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-custom {% if message.tags == 'success' %}alert-success-custom{% endif %} fade-in">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-triangle{% endif %} me-2"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="{% url 'login' %}" class="fade-in">
+        {% csrf_token %}
+        <input type="hidden" name="action_type" value="registro_activacion">
+        <input type="hidden" name="next" value="{{ next_url }}">
+
+        <div class="mb-3 text-start">
+            <label class="label-white">DNI del Padre / Apoderado</label>
+            <input type="text" name="dni_padre" class="form-control-custom" >
+            <div class="small-text">Será su nombre de usuario</div>
+        </div>
+        <div class="mb-3 text-start">
+            <label class="label-white">Nombre completo (Nombres y Apellidos)</label>
+            <input type="text" name="nombre_completo" class="form-control-custom" >
+        </div>
+        <div class="mb-3 text-start">
+            <label class="label-white">Correo electrónico</label>
+            <input type="email" name="email_padre" class="form-control-custom" >
+        </div>
+        <div class="mb-3 text-start">
+            <label class="label-white">DNI de la estudiante (hija)</label>
+            <input type="text" name="dni_hija" class="form-control-custom" >
+        </div>
+        <div class="mb-4 text-start">
+            <label class="label-white">Contraseña</label>
+            <input type="password" name="nueva_password" class="form-control-custom" >
+        </div>
+
+        <button type="submit" class="btn-registrar">
+            <i class="fas fa-user-plus me-2"></i> Registrar y acceder
+        </button>
+    </form>
+
+    <div class="divider"></div>
+    <a href="{% url 'login' %}" class="btn-volver">
+        <i class="fas fa-arrow-left me-2"></i> Volver al inicio de sesión
+    </a>
+    <div class="mt-4 small text-white-50">
+        <i class="fas fa-shield-alt me-1"></i> Datos protegidos – solo uso académico
+    </div>
+</div>
+</body>
+</html>
